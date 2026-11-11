@@ -1,0 +1,56 @@
+export type ModLoader = 'universal' | 'fabric' | 'neoforge' | 'forge' | 'quilt';
+
+export type ModEnvironment = 'client_server' | 'client_only' | 'server_only';
+
+export interface ModMetadata {
+  modId: string;
+  modName: string;
+  version: string;
+  description: string;
+  authors: string[];
+  license: string;
+  homepage: string;
+  sources: string;
+  issues: string;
+  loader: ModLoader;
+  targetMcVersion: string;
+  customMcVersionRange?: string;
+  environment: ModEnvironment;
+  includePackMcmeta: boolean;
+  requireFabricApi: boolean;
+  iconDataUrl: string | null; // data URL or base64 PNG
+}
+
+export interface PackFile {
+  path: string; // sanitized path inside root, e.g. 'data/namespace/functions/tick.mcfunction'
+  size: number;
+  isBinary: boolean;
+  content?: string; // for text files
+  raw?: Uint8Array; // raw binary
+}
+
+export interface DatapackSummary {
+  packFormat: number;
+  originalDescription: string;
+  namespaces: string[];
+  totalFiles: number;
+  totalSize: number;
+  counts: {
+    functions: number;
+    recipes: number;
+    lootTables: number;
+    tags: number;
+    advancements: number;
+    predicates: number;
+    structures: number;
+    worldgen: number;
+    other: number;
+  };
+}
+
+export interface SamplePack {
+  id: string;
+  name: string;
+  description: string;
+  files: Record<string, string>; // path -> content
+}

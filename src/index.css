@@ -1,0 +1,159 @@
+@import 'lenis/dist/lenis.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    color-scheme: dark;
+  }
+
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+
+  body {
+    background-color: #080a0e;
+    color: #f1f5f9;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: clip;
+  }
+}
+
+/* Custom modern sleek scrollbar */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(10, 13, 18, 0.7);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.16);
+  border-radius: 9999px;
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(16, 185, 129, 0.55);
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+}
+
+/* Glassmorphism & Modern Blur Utilities */
+.glass-panel {
+  background: rgba(16, 20, 27, 0.65);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+.glass-panel-elevated {
+  background: rgba(19, 24, 34, 0.75);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 16px 48px -8px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+.glass-panel-hover {
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-panel-hover:hover {
+  background: rgba(26, 33, 46, 0.85);
+  border-color: rgba(16, 185, 129, 0.4);
+  box-shadow: 0 12px 36px -8px rgba(16, 185, 129, 0.18), 0 0 0 1px rgba(16, 185, 129, 0.2);
+  transform: translateY(-2px);
+}
+
+.glass-input {
+  background: rgba(12, 15, 21, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-input:focus {
+  background: rgba(16, 21, 30, 0.9);
+  border-color: rgba(16, 185, 129, 0.6);
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15), 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Background floating animation keyframes */
+@keyframes float-slow {
+  0%, 100% {
+    transform: translate(0px, 0px) scale(1);
+  }
+  50% {
+    transform: translate(30px, -40px) scale(1.08);
+  }
+}
+
+@keyframes float-reverse {
+  0%, 100% {
+    transform: translate(0px, 0px) scale(1);
+  }
+  50% {
+    transform: translate(-35px, 35px) scale(0.95);
+  }
+}
+
+@keyframes pulse-slow {
+  0%, 100% {
+    opacity: 0.16;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.28;
+    transform: scale(1.12);
+  }
+}
+
+.animate-float-slow {
+  animation: float-slow 18s ease-in-out infinite;
+  will-change: transform;
+}
+
+.animate-float-reverse {
+  animation: float-reverse 22s ease-in-out infinite;
+  will-change: transform;
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 12s ease-in-out infinite;
+  will-change: opacity, transform;
+}
+
+/* Code viewer line numbers */
+.code-line-numbers {
+  counter-reset: line;
+}
+
+.code-line-numbers > div {
+  counter-increment: line;
+  position: relative;
+  padding-left: 3rem;
+}
+
+.code-line-numbers > div::before {
+  content: counter(line);
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 2.2rem;
+  text-align: right;
+  color: rgba(255, 255, 255, 0.2);
+  user-select: none;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+}
