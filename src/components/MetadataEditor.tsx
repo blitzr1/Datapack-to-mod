@@ -5,6 +5,7 @@ import type {
   ModEnvironment
 } from '../types';
 import { MINECRAFT_VERSIONS, COMMON_LICENSES } from '../utils/packFormatMap';
+import { DescriptorPanel } from './DescriptorPanel';
 import {
   Globe,
   GitBranch,
@@ -20,7 +21,8 @@ import {
   Cpu,
   ShieldCheck,
   Palette,
-  Sparkles
+  Sparkles,
+  FileCode2
 } from 'lucide-react';
 
 interface MetadataEditorProps {
@@ -35,7 +37,7 @@ export const MetadataEditor: React.FC<MetadataEditorProps> = ({
   originalPackFormat
 }) => {
   const [authorInput, setAuthorInput] = useState('');
-  const [activeTab, setActiveTab] = useState<'general' | 'loaders' | 'icon' | 'links' | 'advanced'>('general');
+  const [activeTab, setActiveTab] = useState<'general' | 'loaders' | 'icon' | 'links' | 'descriptors' | 'advanced'>('general');
   const iconInputRef = useRef<HTMLInputElement>(null);
 
   // Mod ID validation
@@ -226,6 +228,18 @@ export const MetadataEditor: React.FC<MetadataEditorProps> = ({
         >
           <Globe className="w-4 h-4" />
           Links & Socials
+        </button>
+
+        <button
+          onClick={() => setActiveTab('descriptors')}
+          className={`flex items-center gap-2 px-4 py-2.5 text-xs sm:text-sm font-semibold rounded-2xl transition-all duration-200 whitespace-nowrap ${
+            activeTab === 'descriptors'
+              ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 shadow-sm shadow-emerald-500/10'
+              : 'text-slate-400 hover:text-slate-200 hover:bg-white/[0.04]'
+          }`}
+        >
+          <FileCode2 className="w-4 h-4" />
+          Descriptor Files
         </button>
 
         <button
@@ -730,6 +744,11 @@ export const MetadataEditor: React.FC<MetadataEditorProps> = ({
               </div>
             </div>
           </div>
+        )}
+
+        {/* ================= DESCRIPTOR FILES ================= */}
+        {activeTab === 'descriptors' && (
+          <DescriptorPanel metadata={metadata} onChange={onChange} />
         )}
 
         {/* ================= ADVANCED OPTIONS ================= */}

@@ -3,14 +3,14 @@ import { getVersionInfo, getVersionByPackFormat } from './packFormatMap';
 
 // A pack's declared format says which client can load it; the target version
 // string is only a UI choice and may not have its own row in the table.
-function rangeFor(meta: ModMetadata): string {
+export function minecraftRangeFor(meta: ModMetadata): string {
   if (meta.customMcVersionRange?.trim()) return meta.customMcVersionRange.trim();
   const info = meta.packFormat ? getVersionByPackFormat(meta.packFormat) : getVersionInfo(meta.targetMcVersion);
   return info.minecraftRange;
 }
 
 export function generateFabricModJson(meta: ModMetadata): string {
-  const mcRange = rangeFor(meta);
+  const mcRange = minecraftRangeFor(meta);
 
   const contact: Record<string, string> = {};
   if (meta.homepage?.trim()) contact.homepage = meta.homepage.trim();
@@ -41,7 +41,8 @@ export function generateFabricModJson(meta: ModMetadata): string {
     authors: meta.authors.length > 0 ? meta.authors : ['Anonymous'],
     contact: Object.keys(contact).length > 0 ? contact : undefined,
     license: meta.license || 'MIT',
-    icon: `assets/${meta.modId}/icon.png`,
+    // Same rule as the TOML: never name an icon file the jar does not contain.
+    icon: meta.iconDataUrl ? `assets/${meta.modId}/icon.png` : undefined,
     environment: env,
     depends
   };
@@ -73,12 +74,15 @@ function generateModsToml(meta: ModMetadata, loader: 'forge' | 'neoforge'): stri
     `displayName=${q(meta.modName || meta.modId)}`,
     `description=${q(meta.description || 'Converted from Minecraft Datapack')}`,
     `authors=${q(meta.authors.join(', ') || 'Anonymous')}`,
-    `credits=${q('Converted from a datapack')}`,
-    'logoFile="icon.png"'
+    `credits=${q(meta.credits?.trim() || 'Converted from a datapack')}`
   ];
 
+  // Only point at a logo the jar actually contains; a missing logoFile makes
+  // Forge log a broken-image warning on every launch.
+  if (meta.iconDataUrl) lines.push('logoFile="icon.png"');
   if (meta.homepage?.trim()) lines.push(`displayURL=${q(meta.homepage.trim())}`);
   if (meta.issues?.trim()) lines.push(`issueTrackerURL=${q(meta.issues.trim())}`);
+  if (meta.updateJsonUrl?.trim()) lines.push(`updateJSONURL=${q(meta.updateJsonUrl.trim())}`);
 
   // No [[dependencies]] unless the user declares one: the loader and Minecraft
   // ranges this tool used to invent were wrong for every version it guessed.
@@ -94,7 +98,7 @@ export function generateForgeModsToml(meta: ModMetadata): string {
 }
 
 export function generateQuiltModJson(meta: ModMetadata): string {
-  const mcRange = rangeFor(meta);
+  const mcRange = minecraftRangeFor(meta);
 
   const contributors: Record<string, string> = {};
   meta.authors.forEach(author => {
@@ -118,7 +122,7 @@ export function generateQuiltModJson(meta: ModMetadata): string {
         contributors: Object.keys(contributors).length > 0 ? contributors : { Anonymous: 'Owner' },
         contact: Object.keys(contact).length > 0 ? contact : undefined,
         license: meta.license || 'MIT',
-        icon: 'icon.png'
+        icon: meta.iconDataUrl ? 'icon.png' : undefined
       },
       intermediate_mappings: 'net.fabricmc:intermediary',
       depends: [

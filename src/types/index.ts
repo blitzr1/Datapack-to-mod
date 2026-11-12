@@ -24,6 +24,9 @@ export interface ModMetadata {
   includePackMcmeta: boolean;
   // The datapack needs fabric-resource-loader-v0 to be read from a mod jar.
   requireResourceLoader: boolean;
+  // Real mods.toml fields; fabric.mod.json has no equivalent for either.
+  credits?: string;
+  updateJsonUrl?: string;
   // Carried over from the source pack so packaging never changes compatibility.
   packFormat?: number;
   supportedFormats?: PackFormatRange;

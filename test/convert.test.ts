@@ -21,6 +21,8 @@ const baseMeta: ModMetadata = {
   environment: 'client_server',
   includePackMcmeta: true,
   requireResourceLoader: true,
+  credits: 'Ported by Ann',
+  updateJsonUrl: 'https://example.com/updates.json',
   packFormat: 71,
   supportedFormats: { min_inclusive: 71, max_inclusive: 81 },
   iconDataUrl: null
@@ -85,6 +87,8 @@ test('forge and neoforge toml round-trip hostile metadata', async () => {
     expect(basicValue(toml, 'displayName')).toEqual([baseMeta.modName]);
     expect(basicValue(toml, 'description')).toEqual([baseMeta.description]);
     expect(basicValue(toml, 'authors')).toEqual([baseMeta.authors.join(', ')]);
+    expect(basicValue(toml, 'credits')).toEqual(['Ported by Ann']);
+    expect(basicValue(toml, 'updateJSONURL')).toEqual(['https://example.com/updates.json']);
     expect(basicValue(toml, 'license', null)).toEqual(['MIT']);
     // literal-string fences were the broken part; they must be gone
     expect(toml.split('\n').some(line => line.trim() === "'''")).toBe(false);
@@ -106,6 +110,17 @@ test('forge is told low-code and neither toml invents dependencies', () => {
 test('minecraft range follows the source pack format, not the label', () => {
   const fabric = JSON.parse(generateFabricModJson({ ...baseMeta, customMcVersionRange: undefined }));
   expect(fabric.depends.minecraft).toBe('>=1.21.5 <=1.21.8');
+});
+
+test('descriptors only name an icon the jar contains', () => {
+  const noIcon = { ...baseMeta, iconDataUrl: null };
+  expect(JSON.parse(generateFabricModJson(noIcon)).icon).toBeUndefined();
+  expect(generateForgeModsToml(noIcon).includes('logoFile')).toBe(false);
+
+  // 1x1 gif, enough for the generators to agree a file will be written.
+  const withIcon = { ...baseMeta, iconDataUrl: 'data:image/png;base64,R0lGODlhAQABAAAAACw=' };
+  expect(JSON.parse(generateFabricModJson(withIcon)).icon).toBe('assets/timber_vein/icon.png');
+  expect(generateForgeModsToml(withIcon)).toContain('logoFile="icon.png"');
 });
 
 test('universal jar carries every loader manifest', async () => {
