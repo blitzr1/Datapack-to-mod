@@ -755,18 +755,18 @@ export const MetadataEditor: React.FC<MetadataEditorProps> = ({
 
             <div className="p-5 rounded-2xl bg-white/[0.02] border border-white/10 flex items-start gap-4 transition-colors hover:bg-white/[0.04]">
               <input
-                id="requireFabricApi"
+                id="requireResourceLoader"
                 type="checkbox"
-                checked={metadata.requireFabricApi}
-                onChange={(e) => onChange({ ...metadata, requireFabricApi: e.target.checked })}
+                checked={metadata.requireResourceLoader}
+                onChange={(e) => onChange({ ...metadata, requireResourceLoader: e.target.checked })}
                 className="mt-1 w-4 h-4 rounded text-emerald-500 bg-black/40 border-white/20 focus:ring-emerald-500 cursor-pointer"
               />
               <div>
-                <label htmlFor="requireFabricApi" className="text-sm font-semibold text-white cursor-pointer">
-                  Require Fabric API as dependency (Fabric / Quilt)
+                <label htmlFor="requireResourceLoader" className="text-sm font-semibold text-white cursor-pointer">
+                  Require Fabric Resource Loader (Fabric / Quilt)
                 </label>
                 <p className="text-xs text-slate-400 mt-1 leading-relaxed">
-                  Fabric API contains the virtual Resource & Data Pack loader that allows Fabric to inject the mod's <code className="text-emerald-400 font-mono">data/</code> directory into the game seamlessly.
+                  Declares a dependency on <code className="text-emerald-400 font-mono">fabric-resource-loader-v0</code>, the module that lets Fabric read the mod's <code className="text-emerald-400 font-mono">data/</code> directory. It ships inside Fabric API, so installing Fabric API satisfies it.
                 </p>
               </div>
             </div>

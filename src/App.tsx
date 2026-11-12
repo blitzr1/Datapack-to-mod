@@ -275,7 +275,7 @@ export function App() {
       targetMcVersion: '1.21',
       environment: 'client_server',
       includePackMcmeta: true,
-      requireFabricApi: true,
+      requireResourceLoader: true,
       iconDataUrl: null
     });
   };

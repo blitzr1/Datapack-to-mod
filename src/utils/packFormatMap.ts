@@ -1,110 +1,130 @@
 export interface VersionInfo {
   version: string;
   packFormat: number;
+  // A pack built for the lower end of the group stays loadable up to this format.
+  maxPackFormat?: number;
   label: string;
-  fabricMinecraftRange: string;
-  neoforgeRange: string;
-  forgeRange: string;
+  minecraftRange: string;
 }
 
+// Datapack (data) formats, newest first. Values up to 26.3 are taken from the
+// published Wither Ascension releases rather than guessed: 48 / 57-61 / 71-81 /
+// 88-102 / 107-108 / 121.
 export const MINECRAFT_VERSIONS: VersionInfo[] = [
+  {
+    version: '26.3',
+    packFormat: 121,
+    label: '26.3',
+    minecraftRange: '>=26.3'
+  },
+  {
+    version: '26.2',
+    packFormat: 107,
+    maxPackFormat: 108,
+    label: '26.2',
+    minecraftRange: '>=26.2 <26.3'
+  },
+  {
+    version: '1.21.9',
+    packFormat: 88,
+    maxPackFormat: 102,
+    label: '1.21.9 - 26.1.2',
+    minecraftRange: '>=1.21.9 <=26.1.2'
+  },
+  {
+    version: '1.21.5',
+    packFormat: 71,
+    maxPackFormat: 81,
+    label: '1.21.5 - 1.21.8',
+    minecraftRange: '>=1.21.5 <=1.21.8'
+  },
   {
     version: '1.21.4',
     packFormat: 61,
-    label: '1.21.4 (Latest)',
-    fabricMinecraftRange: '>=1.21.4',
-    neoforgeRange: '[21.4.0,)',
-    forgeRange: '[54.0.0,)'
+    label: '1.21.4',
+    minecraftRange: '>=1.21.4 <1.21.5'
   },
   {
     version: '1.21.2',
     packFormat: 57,
-    label: '1.21.2 - 1.21.3',
-    fabricMinecraftRange: '>=1.21.2 <=1.21.3',
-    neoforgeRange: '[21.2.0,21.4.0)',
-    forgeRange: '[53.0.0,)'
+    maxPackFormat: 61,
+    label: '1.21.2 - 1.21.4',
+    minecraftRange: '>=1.21.2 <=1.21.4'
   },
   {
     version: '1.21',
     packFormat: 48,
     label: '1.21 - 1.21.1 (Tricky Trials)',
-    fabricMinecraftRange: '>=1.21 <=1.21.1',
-    neoforgeRange: '[21.0.0,21.2.0)',
-    forgeRange: '[51.0.0,52.0.0)'
+    minecraftRange: '>=1.21 <=1.21.1'
   },
   {
-    version: '1.20.6',
+    version: '1.20.5',
     packFormat: 41,
     label: '1.20.5 - 1.20.6',
-    fabricMinecraftRange: '>=1.20.5 <=1.20.6',
-    neoforgeRange: '[20.6.0,21.0.0)',
-    forgeRange: '[50.0.0,51.0.0)'
+    minecraftRange: '>=1.20.5 <=1.20.6'
   },
   {
-    version: '1.20.4',
+    version: '1.20.3',
     packFormat: 26,
     label: '1.20.3 - 1.20.4',
-    fabricMinecraftRange: '>=1.20.3 <=1.20.4',
-    neoforgeRange: '[20.4.0,20.5.0)',
-    forgeRange: '[49.0.0,50.0.0)'
+    minecraftRange: '>=1.20.3 <=1.20.4'
   },
   {
-    version: '1.20.1',
+    version: '1.20',
     packFormat: 15,
     label: '1.20 - 1.20.1 (Trails & Tales)',
-    fabricMinecraftRange: '>=1.20 <=1.20.1',
-    neoforgeRange: '[20.1.0,20.2.0)',
-    forgeRange: '[47.0.0,48.0.0)'
+    minecraftRange: '>=1.20 <=1.20.1'
   },
   {
     version: '1.19.4',
     packFormat: 12,
     label: '1.19.4',
-    fabricMinecraftRange: '>=1.19.4',
-    neoforgeRange: '[1.19.4,)',
-    forgeRange: '[45.0.0,46.0.0)'
+    minecraftRange: '>=1.19.4 <1.20'
   },
   {
-    version: '1.19.2',
+    version: '1.19',
     packFormat: 10,
     label: '1.19 - 1.19.2 (The Wild Update)',
-    fabricMinecraftRange: '>=1.19 <=1.19.2',
-    neoforgeRange: '[1.19,)',
-    forgeRange: '[43.0.0,44.0.0)'
+    minecraftRange: '>=1.19 <=1.19.2'
   },
   {
     version: '1.18.2',
     packFormat: 9,
     label: '1.18.2 (Caves & Cliffs II)',
-    fabricMinecraftRange: '>=1.18.2',
-    neoforgeRange: '[1.18.2,)',
-    forgeRange: '[40.0.0,41.0.0)'
+    minecraftRange: '>=1.18.2 <1.19'
   },
   {
     version: '1.16.5',
     packFormat: 6,
     label: '1.16.5 (Nether Update)',
-    fabricMinecraftRange: '>=1.16.5',
-    neoforgeRange: '[1.16.5,)',
-    forgeRange: '[36.0.0,37.0.0)'
+    minecraftRange: '>=1.16.5 <1.17'
   }
 ];
 
+// Exact format wins, then the range a pack declares, then the closest known.
 export function getVersionByPackFormat(format: number): VersionInfo {
-  // Find exact or closest version
   const exact = MINECRAFT_VERSIONS.find(v => v.packFormat === format);
   if (exact) return exact;
 
-  // Find nearest
-  const sorted = [...MINECRAFT_VERSIONS].sort((a, b) => 
-    Math.abs(a.packFormat - format) - Math.abs(b.packFormat - format)
+  const inRange = MINECRAFT_VERSIONS.find(
+    v => v.maxPackFormat !== undefined && format > v.packFormat && format <= v.maxPackFormat
+  );
+  if (inRange) return inRange;
+
+  const sorted = [...MINECRAFT_VERSIONS].sort(
+    (a, b) => Math.abs(a.packFormat - format) - Math.abs(b.packFormat - format)
   );
   return sorted[0] || MINECRAFT_VERSIONS[0];
 }
 
 export function getVersionInfo(versionStr: string): VersionInfo {
-  const found = MINECRAFT_VERSIONS.find(v => v.version === versionStr);
-  return found || MINECRAFT_VERSIONS[0];
+  const exact = MINECRAFT_VERSIONS.find(v => v.version === versionStr);
+  if (exact) return exact;
+
+  // A patch version without its own row belongs to the row it starts with
+  // (1.20.1 -> 1.20). Falling back to the newest row would mislabel old packs.
+  const prefix = MINECRAFT_VERSIONS.find(v => versionStr.startsWith(v.version));
+  return prefix || MINECRAFT_VERSIONS.find(v => v.packFormat === 48) || MINECRAFT_VERSIONS[0];
 }
 
 export const COMMON_LICENSES = [

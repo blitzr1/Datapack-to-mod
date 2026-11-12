@@ -2,6 +2,11 @@ export type ModLoader = 'universal' | 'fabric' | 'neoforge' | 'forge' | 'quilt';
 
 export type ModEnvironment = 'client_server' | 'client_only' | 'server_only';
 
+export interface PackFormatRange {
+  min_inclusive: number;
+  max_inclusive: number;
+}
+
 export interface ModMetadata {
   modId: string;
   modName: string;
@@ -17,7 +22,11 @@ export interface ModMetadata {
   customMcVersionRange?: string;
   environment: ModEnvironment;
   includePackMcmeta: boolean;
-  requireFabricApi: boolean;
+  // The datapack needs fabric-resource-loader-v0 to be read from a mod jar.
+  requireResourceLoader: boolean;
+  // Carried over from the source pack so packaging never changes compatibility.
+  packFormat?: number;
+  supportedFormats?: PackFormatRange;
   iconDataUrl: string | null; // data URL or base64 PNG
 }
 

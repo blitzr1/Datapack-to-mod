@@ -1,9 +1,16 @@
 import type { ModMetadata } from '../types';
-import { getVersionInfo } from './packFormatMap';
+import { getVersionInfo, getVersionByPackFormat } from './packFormatMap';
+
+// A pack's declared format says which client can load it; the target version
+// string is only a UI choice and may not have its own row in the table.
+function rangeFor(meta: ModMetadata): string {
+  if (meta.customMcVersionRange?.trim()) return meta.customMcVersionRange.trim();
+  const info = meta.packFormat ? getVersionByPackFormat(meta.packFormat) : getVersionInfo(meta.targetMcVersion);
+  return info.minecraftRange;
+}
 
 export function generateFabricModJson(meta: ModMetadata): string {
-  const versionInfo = getVersionInfo(meta.targetMcVersion);
-  const mcRange = meta.customMcVersionRange?.trim() || versionInfo.fabricMinecraftRange;
+  const mcRange = rangeFor(meta);
 
   const contact: Record<string, string> = {};
   if (meta.homepage?.trim()) contact.homepage = meta.homepage.trim();
@@ -19,8 +26,10 @@ export function generateFabricModJson(meta: ModMetadata): string {
     minecraft: mcRange,
   };
 
-  if (meta.requireFabricApi) {
-    depends['fabric-api'] = '*';
+  // fabric-api is a bundle; the resource loader is the module that actually
+  // reads a datapack out of a mod jar.
+  if (meta.requireResourceLoader) {
+    depends['fabric-resource-loader-v0'] = '*';
   }
 
   const manifest = {
@@ -46,50 +55,33 @@ export function generateFabricModJson(meta: ModMetadata): string {
 const q = (value: string) => JSON.stringify(value);
 
 function generateModsToml(meta: ModMetadata, loader: 'forge' | 'neoforge'): string {
-  const versionInfo = getVersionInfo(meta.targetMcVersion);
-
-  let side = 'BOTH';
-  if (meta.environment === 'client_only') side = 'CLIENT';
-  if (meta.environment === 'server_only') side = 'SERVER';
-
-  // Forge marks required deps with a boolean, NeoForge with a string.
-  const required = loader === 'forge' ? 'mandatory=true' : 'type="required"';
-  const loaderVersion = loader === 'forge' ? '[36,)' : '[1,)';
-  const loaderRange = loader === 'forge' ? versionInfo.forgeRange : versionInfo.neoforgeRange;
+  // A converted datapack has no Java in it, so Forge must be told to load it as
+  // a low-code mod. "javafml" sends Forge looking for a @Mod class that is not
+  // there. NeoForge has no low-code provider and accepts javafml for this.
+  const modLoader = loader === 'forge' ? 'lowcodefml' : 'javafml';
+  const loaderVersion = loader === 'forge' ? '[40,)' : '[1,)';
 
   const lines = [
-    `modLoader="javafml"`,
+    `modLoader=${q(modLoader)}`,
     `loaderVersion=${q(loaderVersion)}`,
     `license=${q(meta.license || 'MIT')}`,
+    'showAsResourcePack=false',
     '',
     '[[mods]]',
     `modId=${q(meta.modId)}`,
     `version=${q(meta.version || '1.0.0')}`,
     `displayName=${q(meta.modName || meta.modId)}`,
     `description=${q(meta.description || 'Converted from Minecraft Datapack')}`,
-    `authors=${q(meta.authors.join(', ') || 'Anonymous')}`
+    `authors=${q(meta.authors.join(', ') || 'Anonymous')}`,
+    `credits=${q('Converted from a datapack')}`,
+    'logoFile="icon.png"'
   ];
 
   if (meta.homepage?.trim()) lines.push(`displayURL=${q(meta.homepage.trim())}`);
+  if (meta.issues?.trim()) lines.push(`issueTrackerURL=${q(meta.issues.trim())}`);
 
-  lines.push(
-    'logoFile="icon.png"',
-    '',
-    `[[dependencies.${meta.modId}]]`,
-    `modId=${q(loader)}`,
-    required,
-    `versionRange=${q(loaderRange)}`,
-    'ordering="NONE"',
-    `side=${q(side)}`,
-    '',
-    `[[dependencies.${meta.modId}]]`,
-    'modId="minecraft"',
-    required,
-    `versionRange=${q(meta.customMcVersionRange?.trim() || `[${versionInfo.version},)`)}`,
-    'ordering="NONE"',
-    `side=${q(side)}`
-  );
-
+  // No [[dependencies]] unless the user declares one: the loader and Minecraft
+  // ranges this tool used to invent were wrong for every version it guessed.
   return lines.join('\n');
 }
 
@@ -102,8 +94,7 @@ export function generateForgeModsToml(meta: ModMetadata): string {
 }
 
 export function generateQuiltModJson(meta: ModMetadata): string {
-  const versionInfo = getVersionInfo(meta.targetMcVersion);
-  const mcRange = meta.customMcVersionRange?.trim() || versionInfo.fabricMinecraftRange;
+  const mcRange = rangeFor(meta);
 
   const contributors: Record<string, string> = {};
   meta.authors.forEach(author => {
@@ -148,16 +139,20 @@ export function generateQuiltModJson(meta: ModMetadata): string {
 
 export function generatePackMcmeta(meta: ModMetadata, originalPackFormat?: number): string {
   const versionInfo = getVersionInfo(meta.targetMcVersion);
-  const format = originalPackFormat || versionInfo.packFormat;
+  // The source pack's own format is authoritative. Recomputing it from the game
+  // version silently downgraded newer packs (71 -> 61) and dropped the range.
+  const format = meta.packFormat ?? originalPackFormat ?? versionInfo.packFormat;
 
-  const packObj = {
-    pack: {
-      pack_format: format,
-      description: meta.description || meta.modName || 'Converted Minecraft Datapack Mod'
-    }
+  const packObj: Record<string, unknown> = {
+    pack_format: format,
+    description: meta.description || meta.modName || 'Converted Minecraft Datapack Mod'
   };
 
-  return JSON.stringify(packObj, null, 2);
+  if (meta.supportedFormats) {
+    packObj.supported_formats = meta.supportedFormats;
+  }
+
+  return JSON.stringify({ pack: packObj }, null, 2);
 }
 
 export function generateManifestMF(meta: ModMetadata): string {

@@ -1,5 +1,5 @@
 import JSZip from 'jszip';
-import type { PackFile, DatapackSummary, ModMetadata } from '../types';
+import type { PackFile, DatapackSummary, ModMetadata, PackFormatRange } from '../types';
 import { getVersionByPackFormat } from './packFormatMap';
 
 /**
@@ -202,6 +202,7 @@ function analyzeAndBuildResult(
 ): ParsedDatapackResult {
   let packFormat = 48; // default to 1.21
   let originalDescription = '';
+  let supportedFormats: PackFormatRange | undefined;
 
   if (packMcmetaText) {
     try {
@@ -212,6 +213,10 @@ function analyzeAndBuildResult(
         }
         if (parsed.pack.description) {
           originalDescription = extractPlainTextDescription(parsed.pack.description);
+        }
+        const range = parsed.pack.supported_formats;
+        if (range && typeof range.min_inclusive === 'number' && typeof range.max_inclusive === 'number') {
+          supportedFormats = { min_inclusive: range.min_inclusive, max_inclusive: range.max_inclusive };
         }
       }
     } catch (err) {
@@ -323,7 +328,9 @@ function analyzeAndBuildResult(
       targetMcVersion: versionInfo.version,
       environment: 'client_server',
       includePackMcmeta: true,
-      requireFabricApi: true,
+      requireResourceLoader: true,
+      packFormat,
+      supportedFormats,
       iconDataUrl
     },
     iconDataUrl

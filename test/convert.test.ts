@@ -2,7 +2,7 @@ import { expect, test } from 'bun:test';
 import JSZip from 'jszip';
 import { parseDatapackZip } from '../src/utils/datapackParser';
 import { buildModJar } from '../src/utils/jarBuilder';
-import { generateForgeModsToml, generateNeoForgeModsToml } from '../src/utils/metadataGenerators';
+import { generateFabricModJson, generateForgeModsToml, generateNeoForgeModsToml } from '../src/utils/metadataGenerators';
 import type { ModMetadata } from '../src/types';
 
 const baseMeta: ModMetadata = {
@@ -20,7 +20,9 @@ const baseMeta: ModMetadata = {
   customMcVersionRange: '>=1.20 <=1.20.1',
   environment: 'client_server',
   includePackMcmeta: true,
-  requireFabricApi: true,
+  requireResourceLoader: true,
+  packFormat: 71,
+  supportedFormats: { min_inclusive: 71, max_inclusive: 81 },
   iconDataUrl: null
 };
 
@@ -89,6 +91,23 @@ test('forge and neoforge toml round-trip hostile metadata', async () => {
   }
 });
 
+test('forge is told low-code and neither toml invents dependencies', () => {
+  const forge = generateForgeModsToml(baseMeta);
+  // "javafml" makes Forge hunt for a @Mod class that a converted pack does not have.
+  expect(basicValue(forge, 'modLoader', null)).toEqual(['lowcodefml']);
+  expect(forge).toContain('showAsResourcePack=false');
+  expect(forge.includes('[[dependencies')).toBe(false);
+
+  const neo = generateNeoForgeModsToml(baseMeta);
+  expect(basicValue(neo, 'modLoader', null)).toEqual(['javafml']);
+  expect(neo.includes('[[dependencies')).toBe(false);
+});
+
+test('minecraft range follows the source pack format, not the label', () => {
+  const fabric = JSON.parse(generateFabricModJson({ ...baseMeta, customMcVersionRange: undefined }));
+  expect(fabric.depends.minecraft).toBe('>=1.21.5 <=1.21.8');
+});
+
 test('universal jar carries every loader manifest', async () => {
   const parsed = await parseDatapackZip(new Blob([await makeDatapackZip()]), 'test.zip');
   const { blob: jar, fileName } = await buildModJar(parsed.files, baseMeta);
@@ -112,6 +131,14 @@ test('universal jar carries every loader manifest', async () => {
   expect(fabric.description).toBe(baseMeta.description);
   expect(fabric.authors).toEqual(baseMeta.authors);
   expect(fabric.depends.minecraft).toBe('>=1.20 <=1.20.1');
+  // The bundle is not the module that reads a datapack out of a jar.
+  expect(fabric.depends['fabric-resource-loader-v0']).toBe('*');
+  expect(fabric.depends['fabric-api']).toBeUndefined();
+
+  // The source format must survive packaging instead of being recomputed downward.
+  const mcmeta = JSON.parse(await back.file('pack.mcmeta')!.async('string'));
+  expect(mcmeta.pack.pack_format).toBe(71);
+  expect(mcmeta.pack.supported_formats).toEqual({ min_inclusive: 71, max_inclusive: 81 });
 
   const quilt = JSON.parse(await back.file('quilt.mod.json')!.async('string'));
   expect(quilt.quilt_loader.id).toBe('timber_vein');
