@@ -185,20 +185,13 @@ function detectCommonRootPrefix(paths: string[]): string {
   return '';
 }
 
+const TEXT_EXTENSIONS = ['.json', '.mcfunction', '.mcmeta', '.txt', '.md', '.toml', '.yaml', '.yml', '.properties', '.snbt'];
+
+// Whitelist, not blacklist: guessing "text" for an unknown extension decodes binary
+// bytes as UTF-8 and corrupts them on write-back.
 function isTextFile(path: string): boolean {
   const lower = path.toLowerCase();
-  return (
-    lower.endsWith('.json') ||
-    lower.endsWith('.mcfunction') ||
-    lower.endsWith('.mcmeta') ||
-    lower.endsWith('.txt') ||
-    lower.endsWith('.md') ||
-    lower.endsWith('.toml') ||
-    lower.endsWith('.yaml') ||
-    lower.endsWith('.yml') ||
-    lower.endsWith('.properties') ||
-    lower.endsWith('.nbt') === false && !lower.endsWith('.png') && !lower.endsWith('.ogg') && !lower.endsWith('.jar')
-  );
+  return TEXT_EXTENSIONS.some(ext => lower.endsWith(ext));
 }
 
 function analyzeAndBuildResult(

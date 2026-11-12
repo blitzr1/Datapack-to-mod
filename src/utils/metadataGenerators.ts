@@ -40,84 +40,65 @@ export function generateFabricModJson(meta: ModMetadata): string {
   return JSON.stringify(manifest, null, 2);
 }
 
-export function generateNeoForgeModsToml(meta: ModMetadata): string {
+// TOML basic strings take the same escapes as JSON, so one quoter is enough.
+// Values are never spliced into a template: a mod name containing a quote used
+// to produce an unparseable mods.toml and the loader silently dropped the mod.
+const q = (value: string) => JSON.stringify(value);
+
+function generateModsToml(meta: ModMetadata, loader: 'forge' | 'neoforge'): string {
   const versionInfo = getVersionInfo(meta.targetMcVersion);
-  const authorsStr = meta.authors.join(', ') || 'Anonymous';
-  const cleanDescription = (meta.description || 'Converted from Minecraft Datapack').replace(/'''/g, "\\'\\'\\'");
 
   let side = 'BOTH';
   if (meta.environment === 'client_only') side = 'CLIENT';
   if (meta.environment === 'server_only') side = 'SERVER';
 
-  return `modLoader="javafml"
-loaderVersion="[1,)"
-license="${meta.license || 'MIT'}"
+  // Forge marks required deps with a boolean, NeoForge with a string.
+  const required = loader === 'forge' ? 'mandatory=true' : 'type="required"';
+  const loaderVersion = loader === 'forge' ? '[36,)' : '[1,)';
+  const loaderRange = loader === 'forge' ? versionInfo.forgeRange : versionInfo.neoforgeRange;
 
-[[mods]]
-modId="${meta.modId}"
-version="${meta.version || '1.0.0'}"
-displayName="${meta.modName || meta.modId}"
-description='''
-${cleanDescription}
-'''
-authors="${authorsStr}"
-${meta.homepage ? `displayURL="${meta.homepage}"` : ''}
-logoFile="icon.png"
+  const lines = [
+    `modLoader="javafml"`,
+    `loaderVersion=${q(loaderVersion)}`,
+    `license=${q(meta.license || 'MIT')}`,
+    '',
+    '[[mods]]',
+    `modId=${q(meta.modId)}`,
+    `version=${q(meta.version || '1.0.0')}`,
+    `displayName=${q(meta.modName || meta.modId)}`,
+    `description=${q(meta.description || 'Converted from Minecraft Datapack')}`,
+    `authors=${q(meta.authors.join(', ') || 'Anonymous')}`
+  ];
 
-[[dependencies.${meta.modId}]]
-modId="neoforge"
-type="required"
-versionRange="${versionInfo.neoforgeRange}"
-ordering="NONE"
-side="${side}"
+  if (meta.homepage?.trim()) lines.push(`displayURL=${q(meta.homepage.trim())}`);
 
-[[dependencies.${meta.modId}]]
-modId="minecraft"
-type="required"
-versionRange="${meta.customMcVersionRange?.trim() || `[${versionInfo.version},)`}"
-ordering="NONE"
-side="${side}"
-`.trim();
+  lines.push(
+    'logoFile="icon.png"',
+    '',
+    `[[dependencies.${meta.modId}]]`,
+    `modId=${q(loader)}`,
+    required,
+    `versionRange=${q(loaderRange)}`,
+    'ordering="NONE"',
+    `side=${q(side)}`,
+    '',
+    `[[dependencies.${meta.modId}]]`,
+    'modId="minecraft"',
+    required,
+    `versionRange=${q(meta.customMcVersionRange?.trim() || `[${versionInfo.version},)`)}`,
+    'ordering="NONE"',
+    `side=${q(side)}`
+  );
+
+  return lines.join('\n');
+}
+
+export function generateNeoForgeModsToml(meta: ModMetadata): string {
+  return generateModsToml(meta, 'neoforge');
 }
 
 export function generateForgeModsToml(meta: ModMetadata): string {
-  const versionInfo = getVersionInfo(meta.targetMcVersion);
-  const authorsStr = meta.authors.join(', ') || 'Anonymous';
-  const cleanDescription = (meta.description || 'Converted from Minecraft Datapack').replace(/'''/g, "\\'\\'\\'");
-
-  let side = 'BOTH';
-  if (meta.environment === 'client_only') side = 'CLIENT';
-  if (meta.environment === 'server_only') side = 'SERVER';
-
-  return `modLoader="javafml"
-loaderVersion="[36,)"
-license="${meta.license || 'MIT'}"
-
-[[mods]]
-modId="${meta.modId}"
-version="${meta.version || '1.0.0'}"
-displayName="${meta.modName || meta.modId}"
-description='''
-${cleanDescription}
-'''
-authors="${authorsStr}"
-${meta.homepage ? `displayURL="${meta.homepage}"` : ''}
-logoFile="icon.png"
-
-[[dependencies.${meta.modId}]]
-modId="forge"
-mandatory=true
-versionRange="${versionInfo.forgeRange}"
-ordering="NONE"
-side="${side}"
-
-[[dependencies.${meta.modId}]]
-modId="minecraft"
-mandatory=true
-versionRange="${meta.customMcVersionRange?.trim() || `[${versionInfo.version},)`}"
-ordering="NONE"
-side="${side}"
-`.trim();
+  return generateModsToml(meta, 'forge');
 }
 
 export function generateQuiltModJson(meta: ModMetadata): string {

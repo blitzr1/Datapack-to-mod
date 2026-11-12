@@ -28,7 +28,8 @@ export async function buildModJar(
       return;
     }
 
-    if (file.isBinary && file.raw) {
+    // raw bytes are the source of truth; a decoded string can have lost bytes
+    if (file.raw) {
       zip.file(relativePath, file.raw);
     } else if (file.content !== undefined) {
       zip.file(relativePath, file.content);
