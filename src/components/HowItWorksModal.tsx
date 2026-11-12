@@ -26,7 +26,7 @@ export const HowItWorksModal: React.FC<HowItWorksModalProps> = ({ isOpen, onClos
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        data-lenis-prevent="true"
+
         className="w-full max-w-2xl bg-[#12161f] border border-white/15 rounded-3xl overflow-hidden shadow-2xl relative max-h-[90vh] flex flex-col animate-in zoom-in-95 duration-200"
       >
         {/* Header */}

@@ -1,6 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
-import Lenis from 'lenis';
-import 'lenis/dist/lenis.css';
+import { useState, useEffect } from 'react';
 import { Header } from './components/Header';
 import { UploadZone } from './components/UploadZone';
 import { MetadataEditor } from './components/MetadataEditor';
@@ -53,80 +51,17 @@ export function App() {
   // Active workspace tab
   const [activeWorkspaceTab, setActiveWorkspaceTab] = useState<'metadata' | 'files' | 'manifests'>('metadata');
 
-  // Lenis instance ref
-  const lenisRef = useRef<Lenis | null>(null);
-
-  // Initialize True Mouse Wheel Momentum & Smooth Scroll
+  // Lock the page behind open modals
   useEffect(() => {
-    let lastWheelTime = 0;
-    let wheelMomentum = 1.0;
-
-    const lenis = new Lenis({
-      lerp: 0.08,
-      wheelMultiplier: 1.8,
-      touchMultiplier: 1.0,
-      smoothWheel: true,
-      syncTouch: false,
-      respectReducedMotion: false,
-      virtualScroll: (data) => {
-        const now = performance.now();
-        const timeSinceLast = now - lastWheelTime;
-        lastWheelTime = now;
-
-        const event = data.event;
-        const isWheelEvent = 'deltaY' in event;
-        const isMouseWheel =
-          isWheelEvent &&
-          ((event as WheelEvent).deltaMode === 1 ||
-            (Math.abs((event as WheelEvent).deltaY) >= 40 && Number.isInteger((event as WheelEvent).deltaY)));
-
-        if (isMouseWheel) {
-          if (timeSinceLast < 220) {
-            wheelMomentum = Math.min(wheelMomentum + 0.35, 2.4);
-          } else {
-            wheelMomentum = 1.0;
-          }
-
-          data.deltaY *= 1.5 * wheelMomentum;
-        }
-
-        return true;
-      }
-    });
-
-    lenisRef.current = lenis;
-
-    let rafId: number;
-    function raf(time: number) {
-      lenis.raf(time);
-      rafId = requestAnimationFrame(raf);
-    }
-
-    rafId = requestAnimationFrame(raf);
-
+    document.body.style.overflow = showConvertModal || showHelpModal ? 'hidden' : '';
     return () => {
-      cancelAnimationFrame(rafId);
-      lenis.destroy();
-      lenisRef.current = null;
+      document.body.style.overflow = '';
     };
-  }, []);
-
-  // Stop Lenis background scrolling when modals are open
-  useEffect(() => {
-    if (lenisRef.current) {
-      if (showConvertModal || showHelpModal) {
-        lenisRef.current.stop();
-      } else {
-        lenisRef.current.start();
-      }
-    }
   }, [showConvertModal, showHelpModal]);
 
-  // Smooth scroll to top when pack is loaded
+  // Bring the workspace into view once a pack is loaded
   useEffect(() => {
-    if (files && lenisRef.current) {
-      lenisRef.current.scrollTo(0, { duration: 0.8 });
-    }
+    if (files) window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [files]);
 
   // Global window drag and drop listener
@@ -335,7 +270,7 @@ export function App() {
       setError(null);
       setBuiltJarBlob(null);
       setIsBuildComplete(false);
-      lenisRef.current?.scrollTo(0, { duration: 0.6 });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 

@@ -170,7 +170,7 @@ export const FileExplorer: React.FC<FileExplorerProps> = ({
 
       {/* Files List */}
       <div className="border border-white/10 rounded-2xl overflow-hidden bg-[#0d1016]/80 backdrop-blur-md">
-        <div data-lenis-prevent="true" className="max-h-80 overflow-y-auto divide-y divide-white/5 scroll-smooth">
+        <div className="max-h-80 overflow-y-auto divide-y divide-white/5 scroll-smooth">
           {filteredFiles.length === 0 ? (
             <div className="py-12 text-center text-slate-400 text-xs">
               No files match your search query.
@@ -228,7 +228,7 @@ export const FileExplorer: React.FC<FileExplorerProps> = ({
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            data-lenis-prevent="true"
+
             className="w-full max-w-3xl bg-[#12161f] border border-white/15 rounded-3xl overflow-hidden shadow-2xl flex flex-col max-h-[85vh] animate-in zoom-in-95 duration-200"
           >
             <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-[#0e1118]/80 backdrop-blur-md">

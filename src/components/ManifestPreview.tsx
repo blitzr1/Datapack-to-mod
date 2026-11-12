@@ -142,7 +142,7 @@ export const ManifestPreview: React.FC<ManifestPreviewProps> = ({
       </div>
 
       {/* Code Container */}
-      <div data-lenis-prevent="true" className="rounded-2xl border border-white/10 bg-[#0a0d12] p-5 font-mono text-xs text-emerald-300/90 overflow-x-auto max-h-80 scroll-smooth shadow-inner">
+      <div className="rounded-2xl border border-white/10 bg-[#0a0d12] p-5 font-mono text-xs text-emerald-300/90 overflow-x-auto max-h-80 scroll-smooth shadow-inner">
         <pre className="whitespace-pre leading-relaxed">{active.content}</pre>
       </div>
     </div>

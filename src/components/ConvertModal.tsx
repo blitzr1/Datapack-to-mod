@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import confetti from 'canvas-confetti';
 import { Download, CheckCircle, Package, Folder, X } from 'lucide-react';
 import type { ModMetadata } from '../types';
 
@@ -26,21 +25,6 @@ export const ConvertModal: React.FC<ConvertModalProps> = ({
   jarSize,
   fileName
 }) => {
-  useEffect(() => {
-    if (isComplete) {
-      try {
-        confetti({
-          particleCount: 80,
-          spread: 70,
-          origin: { y: 0.6 },
-          colors: ['#10b981', '#38bdf8', '#fbbf24', '#f43f5e']
-        });
-      } catch (e) {
-        // confetti fallback
-      }
-    }
-  }, [isComplete]);
-
   // Close on Escape
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -67,7 +51,7 @@ export const ConvertModal: React.FC<ConvertModalProps> = ({
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        data-lenis-prevent="true"
+
         className="w-full max-w-xl bg-[#12161f] border border-white/15 rounded-3xl overflow-hidden shadow-2xl relative animate-in zoom-in-95 duration-200"
       >
         {/* Close Button */}
