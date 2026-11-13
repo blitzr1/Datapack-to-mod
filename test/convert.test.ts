@@ -158,4 +158,7 @@ test('universal jar carries every loader manifest', async () => {
   const quilt = JSON.parse(await back.file('quilt.mod.json')!.async('string'));
   expect(quilt.quilt_loader.id).toBe('timber_vein');
   expect(quilt.quilt_loader.metadata.contributors).toEqual({ [baseMeta.authors[0]]: 'Owner' });
+  // Quilt parses only one operator per constraint; a space here = load failure.
+  expect(quilt.quilt_loader.depends[1].versions).toBe('>=1.20');
+  expect(quilt.quilt_loader.depends[2]).toEqual({ id: 'fabric-resource-loader-v0', versions: '*' });
 });

@@ -98,12 +98,32 @@ export function generateForgeModsToml(meta: ModMetadata): string {
 }
 
 export function generateQuiltModJson(meta: ModMetadata): string {
-  const mcRange = minecraftRangeFor(meta);
+  // Quilt's parser reads one operator per constraint, so a space-separated
+  // range becomes a single nonsense version and the mod is refused at load.
+  // The lower bound is the part that matters; the upper half has to go.
+  const mcRange = minecraftRangeFor(meta).split(/\s+/)[0];
 
   const contributors: Record<string, string> = {};
   meta.authors.forEach(author => {
     contributors[author] = 'Owner';
   });
+
+  const depends = [
+    {
+      id: 'quilt_loader',
+      versions: '>=0.20.0'
+    },
+    {
+      id: 'minecraft',
+      versions: mcRange
+    }
+  ];
+
+  // Quilt Loader has no data pack loader of its own; Fabric API's module does
+  // the reading through Quilt's Fabric compatibility layer.
+  if (meta.requireResourceLoader) {
+    depends.push({ id: 'fabric-resource-loader-v0', versions: '*' });
+  }
 
   const contact: Record<string, string> = {};
   if (meta.homepage?.trim()) contact.homepage = meta.homepage.trim();
@@ -125,16 +145,7 @@ export function generateQuiltModJson(meta: ModMetadata): string {
         icon: meta.iconDataUrl ? 'icon.png' : undefined
       },
       intermediate_mappings: 'net.fabricmc:intermediary',
-      depends: [
-        {
-          id: 'quilt_loader',
-          versions: '>=0.20.0'
-        },
-        {
-          id: 'minecraft',
-          versions: mcRange
-        }
-      ]
+      depends
     }
   };
 
