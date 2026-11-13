@@ -5,3 +5,8 @@ dist/
 .env
 .env.local
 *.tsbuildinfo
+
+# AI/design artifacts (kept local, not pushed)
+DESIGN.md
+PRODUCT.md
+.impeccable/
