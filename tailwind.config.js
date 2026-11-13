@@ -7,35 +7,36 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Workshop instrument: warm graphite ground, steel panels, brass as the
-        // only accent. Numeric brass shades exist so opacity modifiers still work.
-        ground: '#14120F',
-        panel: '#1B1815',
-        raised: '#221E1A',
-        rule: '#2E2A24',
-        brass: {
-          DEFAULT: '#C89A4E',
-          300: '#E4C48A',
-          400: '#D6AD64',
-          500: '#C89A4E',
-          600: '#A87C36',
-          700: '#7E5B26',
-          800: '#5C431C',
-          900: '#3D2D14',
-          950: '#241A0C',
+        // Cool graphite ground with one blue accent for actions and focus.
+        ground: '#0B0D10',
+        panel: '#12151A',
+        raised: '#171C23',
+        rule: '#232A33',
+        signal: {
+          DEFAULT: '#3B82F6',
+          300: '#93C5FD',
+          400: '#60A5FA',
+          500: '#3B82F6',
+          600: '#2563EB',
+          700: '#1D4ED8',
+          800: '#1E40AF',
+          900: '#1E3A8A',
+          950: '#172554',
         },
-        paper: '#EFE9DF',
-        muted: '#9C9286',
-        ok: '#6E9E6A',
-        warn: '#D08A3E',
-        bad: '#C4624F',
+        paper: '#E6EDF5',
+        soft: '#B9C3D0',
+        muted: '#8B95A5',
+        faint: '#6E7787',
+        ok: '#4FA97A',
+        warn: '#D9A03C',
+        bad: '#E05C5C',
         // Loader cue: a 6px swatch, never a border or a wash.
         loader: {
-          universal: '#A8A29A',
-          fabric: '#C8A97E',
-          quilt: '#A98BB8',
-          forge: '#C08155',
-          neoforge: '#7C9FAE',
+          universal: '#9AA3AF',
+          fabric: '#D4B08C',
+          quilt: '#B18BD0',
+          forge: '#D9824F',
+          neoforge: '#6FA8C9',
         },
       },
       fontFamily: {

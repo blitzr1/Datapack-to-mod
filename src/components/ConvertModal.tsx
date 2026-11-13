@@ -80,7 +80,7 @@ export const ConvertModal: React.FC<ConvertModalProps> = ({
           <div>
             <div className="h-1 w-full bg-rule overflow-hidden">
               <div
-                className="h-full bg-brass-500 transition-[width] duration-300"
+                className="h-full bg-signal-500 transition-[width] duration-300"
                 style={{ width: `${progress}%` }}
               />
             </div>
@@ -94,15 +94,15 @@ export const ConvertModal: React.FC<ConvertModalProps> = ({
             <div className="space-y-5">
               <div className="flex items-center justify-between gap-3 rounded border border-rule bg-ground px-3 py-2.5">
                 <div className="flex items-center gap-2.5 min-w-0">
-                  <Package className="w-4 h-4 text-brass-400 flex-shrink-0" />
-                  <span className="font-mono text-[11px] text-stone-300 truncate">
+                  <Package className="w-4 h-4 text-signal-400 flex-shrink-0" />
+                  <span className="font-mono text-[11px] text-soft truncate">
                     {metadata.loader === 'universal' ? '4 manifests + payload' : `${metadata.loader} manifest + payload`}
                   </span>
                 </div>
                 <button
                   type="button"
                   onClick={onDownload}
-                  className="inline-flex items-center gap-2 h-9 px-3.5 rounded bg-brass-500 hover:bg-brass-400 text-[#1A1410] font-semibold text-xs transition-colors flex-shrink-0"
+                  className="inline-flex items-center gap-2 h-9 px-3.5 rounded bg-signal-600 hover:bg-signal-500 active:bg-signal-700 text-paper font-semibold text-xs transition-colors flex-shrink-0"
                 >
                   <Download className="w-3.5 h-3.5" />
                   Download jar
@@ -111,24 +111,24 @@ export const ConvertModal: React.FC<ConvertModalProps> = ({
 
               <div className="border-t border-rule pt-4">
                 <h3 className="label">Install</h3>
-                <ol className="mt-2.5 space-y-2 text-xs text-stone-300 leading-relaxed">
+                <ol className="mt-2.5 space-y-2 text-xs text-soft leading-relaxed">
                   <li className="flex gap-2.5">
                     <span className="font-mono text-[11px] text-muted pt-0.5">01</span>
                     <span>
-                      Open <code className="font-mono text-stone-200">%appdata%\.minecraft\mods</code> —
-                      or the <code className="font-mono text-stone-200">mods</code> folder of your instance.
+                      Open <code className="font-mono text-paper">%appdata%\.minecraft\mods</code> —
+                      or the <code className="font-mono text-paper">mods</code> folder of your instance.
                     </span>
                   </li>
                   <li className="flex gap-2.5">
                     <span className="font-mono text-[11px] text-muted pt-0.5">02</span>
-                    <span>Place <span className="font-mono text-stone-200 break-all">{fileName}</span> inside it.</span>
+                    <span>Place <span className="font-mono text-paper break-all">{fileName}</span> inside it.</span>
                   </li>
                   <li className="flex gap-2.5">
                     <span className="font-mono text-[11px] text-muted pt-0.5">03</span>
                     <span>
                       Start the loader you targeted. Fabric and Quilt also need the Fabric API mod for
                       the resource-loader dependency in
-                      <code className="font-mono text-stone-200"> fabric.mod.json</code>.
+                      <code className="font-mono text-paper"> fabric.mod.json</code>.
                     </span>
                   </li>
                 </ol>
@@ -142,7 +142,7 @@ export const ConvertModal: React.FC<ConvertModalProps> = ({
                 <button
                   type="button"
                   onClick={onClose}
-                  className="h-9 px-3.5 rounded border border-rule text-xs text-stone-300 hover:text-paper hover:border-stone-600 transition-colors"
+                  className="h-9 px-3.5 rounded border border-rule text-xs text-soft hover:text-paper hover:border-rule-strong transition-colors"
                 >
                   Back to editor
                 </button>

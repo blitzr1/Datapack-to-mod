@@ -14,7 +14,7 @@ export const Footer: React.FC = () => {
       <div className="max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-2.5">
-            <span className="w-1 h-4 bg-brass-500" />
+            <span className="w-1 h-4 bg-signal-500" />
             <span className="font-mono text-[13px] text-paper">datapack→mod</span>
             <span className="text-[11px] text-muted">in-browser packaging</span>
           </div>
@@ -31,14 +31,14 @@ export const Footer: React.FC = () => {
 
         <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 border-t border-rule pt-5">
           <div className="flex items-start gap-2 max-w-2xl">
-            <ShieldCheck className="w-3.5 h-3.5 text-brass-400 flex-shrink-0 mt-0.5" />
+            <ShieldCheck className="w-3.5 h-3.5 text-signal-400 flex-shrink-0 mt-0.5" />
             <p className="text-[11px] text-muted leading-relaxed">
-              <span className="text-stone-300">Nothing is uploaded.</span> Archives are read in browser
+              <span className="text-soft">Nothing is uploaded.</span> Archives are read in browser
               memory; no datapack, file, or texture is sent to a server.
             </p>
           </div>
 
-          <div className="text-[10px] text-stone-400 leading-relaxed sm:text-right">
+          <div className="text-[10px] text-muted leading-relaxed sm:text-right">
             <p>NOT AN OFFICIAL MINECRAFT PRODUCT. NOT APPROVED BY OR ASSOCIATED WITH MOJANG OR MICROSOFT.</p>
             <p>Minecraft is a trademark of Mojang Synergies AB.</p>
           </div>

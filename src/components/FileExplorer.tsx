@@ -54,10 +54,10 @@ export const FileExplorer: React.FC<FileExplorerProps> = ({
   const getFileIcon = (path: string) => {
     const lower = path.toLowerCase();
     if (lower.endsWith('.mcfunction')) {
-      return <ScrollText className="w-3.5 h-3.5 text-brass-400 flex-shrink-0" />;
+      return <ScrollText className="w-3.5 h-3.5 text-signal-400 flex-shrink-0" />;
     }
     if (lower.endsWith('.json') || lower.endsWith('.mcmeta')) {
-      return <FileJson className="w-3.5 h-3.5 text-stone-300 flex-shrink-0" />;
+      return <FileJson className="w-3.5 h-3.5 text-soft flex-shrink-0" />;
     }
     if (lower.endsWith('.png') || lower.endsWith('.jpg')) {
       return <ImageIcon className="w-3.5 h-3.5 text-muted flex-shrink-0" />;
@@ -102,7 +102,7 @@ export const FileExplorer: React.FC<FileExplorerProps> = ({
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Filter by path"
-          className="flex-1 bg-transparent border-0 text-xs font-mono text-paper placeholder:text-stone-500 focus:outline-none"
+          className="flex-1 bg-transparent border-0 text-xs font-mono text-paper placeholder:text-faint focus:outline-none"
         />
         <span className="font-mono text-[11px] text-muted tnum flex-shrink-0">
           {filteredFiles.length}/{fileList.length}
@@ -135,7 +135,7 @@ export const FileExplorer: React.FC<FileExplorerProps> = ({
                 className="flex items-center gap-2.5 min-w-0 flex-1 text-left"
               >
                 {getFileIcon(file.path)}
-                <span className="font-mono text-[11px] text-stone-300 truncate group-hover:text-paper transition-colors">
+                <span className="font-mono text-[11px] text-soft truncate group-hover:text-paper transition-colors">
                   {file.path}
                 </span>
               </button>
@@ -197,12 +197,12 @@ export const FileExplorer: React.FC<FileExplorerProps> = ({
                   <button
                     type="button"
                     onClick={handleCopyFileContent}
-                    className="inline-flex items-center gap-1.5 h-7 px-2 rounded border border-rule text-[11px] text-stone-300 hover:text-paper hover:border-stone-600 transition-colors"
+                    className="inline-flex items-center gap-1.5 h-7 px-2 rounded border border-rule text-[11px] text-soft hover:text-paper hover:border-rule-strong transition-colors"
                   >
                     {hasCopied ? (
                       <>
-                        <Check className="w-3 h-3 text-brass-400" />
-                        <span className="text-brass-400">Copied</span>
+                        <Check className="w-3 h-3 text-signal-400" />
+                        <span className="text-signal-400">Copied</span>
                       </>
                     ) : (
                       <>
@@ -224,7 +224,7 @@ export const FileExplorer: React.FC<FileExplorerProps> = ({
               </div>
             </header>
 
-            <div className="overflow-y-auto font-mono text-xs leading-relaxed bg-ground text-stone-200">
+            <div className="overflow-y-auto font-mono text-xs leading-relaxed bg-ground text-paper">
               {selectedFile.isBinary ? (
                 selectedFile.path.endsWith('.png') && selectedFile.raw ? (
                   <div className="flex flex-col items-center justify-center py-12 px-6">
@@ -264,7 +264,7 @@ export const FileExplorer: React.FC<FileExplorerProps> = ({
               <button
                 type="button"
                 onClick={() => setSelectedFile(null)}
-                className="h-7 px-2.5 rounded border border-rule text-[11px] text-stone-300 hover:text-paper hover:border-stone-600 transition-colors"
+                className="h-7 px-2.5 rounded border border-rule text-[11px] text-soft hover:text-paper hover:border-rule-strong transition-colors"
               >
                 Close
               </button>

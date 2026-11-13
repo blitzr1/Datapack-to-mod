@@ -147,7 +147,7 @@ const Field: React.FC<{ field: DescriptorField }> = ({ field }) => (
     </div>
     <div
       className={`mt-1 font-mono text-[11px] break-all ${
-        field.locked ? 'text-stone-500' : 'text-paper'
+        field.locked ? 'text-faint' : 'text-paper'
       }`}
     >
       {field.value}
@@ -191,7 +191,7 @@ export const DescriptorPanel: React.FC<MetadataEditorProps> = ({ metadata, onCha
               value={metadata.credits ?? ''}
               onChange={(e) => onChange({ ...metadata, credits: e.target.value })}
               placeholder="Converted from a datapack"
-              className="w-full field px-3 py-2 text-xs text-paper placeholder:text-stone-500 focus:outline-none"
+              className="w-full field px-3 py-2 text-xs text-paper placeholder:text-faint focus:outline-none"
             />
           </div>
 
@@ -202,7 +202,7 @@ export const DescriptorPanel: React.FC<MetadataEditorProps> = ({ metadata, onCha
               value={metadata.updateJsonUrl ?? ''}
               onChange={(e) => onChange({ ...metadata, updateJsonUrl: e.target.value })}
               placeholder="https://example.com/updates.json"
-              className="w-full field px-3 py-2 font-mono text-[11px] text-paper placeholder:text-stone-500 focus:outline-none"
+              className="w-full field px-3 py-2 font-mono text-[11px] text-paper placeholder:text-faint focus:outline-none"
             />
           </div>
         </div>
@@ -223,7 +223,7 @@ export const DescriptorPanel: React.FC<MetadataEditorProps> = ({ metadata, onCha
                   <button
                     type="button"
                     onClick={() => setOpen(isOpen ? null : id)}
-                    className="inline-flex items-center gap-1.5 h-7 px-2 rounded border border-rule text-[11px] text-stone-300 hover:text-paper hover:border-stone-600 transition-colors"
+                    className="inline-flex items-center gap-1.5 h-7 px-2 rounded border border-rule text-[11px] text-soft hover:text-paper hover:border-rule-strong transition-colors"
                   >
                     <Code2 className="w-3 h-3" />
                     {isOpen ? 'Hide file' : 'View as file'}
@@ -232,10 +232,10 @@ export const DescriptorPanel: React.FC<MetadataEditorProps> = ({ metadata, onCha
                     type="button"
                     onClick={() => copy(id)}
                     aria-label={`Copy ${file.path}`}
-                    className="inline-flex items-center justify-center h-7 w-7 rounded border border-rule text-muted hover:text-paper hover:border-stone-600 transition-colors"
+                    className="inline-flex items-center justify-center h-7 w-7 rounded border border-rule text-muted hover:text-paper hover:border-rule-strong transition-colors"
                   >
                     {copied === id ? (
-                      <Check className="w-3 h-3 text-brass-400" />
+                      <Check className="w-3 h-3 text-signal-400" />
                     ) : (
                       <Copy className="w-3 h-3" />
                     )}
@@ -250,7 +250,7 @@ export const DescriptorPanel: React.FC<MetadataEditorProps> = ({ metadata, onCha
               </div>
 
               {isOpen && (
-                <pre className="max-h-80 overflow-auto border-t border-rule bg-ground px-3.5 py-3 font-mono text-[11px] leading-relaxed text-stone-200 whitespace-pre">
+                <pre className="max-h-80 overflow-auto border-t border-rule bg-ground px-3.5 py-3 font-mono text-[11px] leading-relaxed text-paper whitespace-pre">
                   {file.generate(metadata)}
                 </pre>
               )}

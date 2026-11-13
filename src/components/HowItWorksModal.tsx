@@ -44,15 +44,15 @@ export const HowItWorksModal: React.FC<HowItWorksModalProps> = ({ isOpen, onClos
         </header>
 
         <div className="p-5 sm:p-6 overflow-y-auto space-y-6">
-          <p className="text-sm text-stone-200 leading-relaxed">
-            Mod loaders already read a <code className="font-mono text-brass-400">data/</code> directory
+          <p className="text-sm text-paper leading-relaxed">
+            Mod loaders already read a <code className="font-mono text-signal-400">data/</code> directory
             from any jar on the classpath and register it as a built-in pack. A datapack that ships inside
             a mod jar therefore behaves like a datapack, without a separate install step.
           </p>
 
           <section>
             <h3 className="label">1 — Payload copied as-is</h3>
-            <p className="mt-1.5 text-xs text-stone-300 leading-relaxed">
+            <p className="mt-1.5 text-xs text-soft leading-relaxed">
               Every entry in your zip — functions, recipes, advancements, loot tables, tags, structures,
               assets, PNGs — is written into the jar byte for byte. The converter adds descriptors; it does
               not rewrite your data files.
@@ -69,8 +69,8 @@ export const HowItWorksModal: React.FC<HowItWorksModalProps> = ({ isOpen, onClos
                 ['META-INF/neoforge.mods.toml', 'NeoForge 1.20.4 and newer, loaded as javafml.'],
               ].map(([file, detail]) => (
                 <div key={file} className="grid grid-cols-1 sm:grid-cols-[210px_1fr] gap-1 sm:gap-4 py-2.5">
-                  <dt className="font-mono text-[11px] text-brass-400 break-all">{file}</dt>
-                  <dd className="text-xs text-stone-300 leading-relaxed">{detail}</dd>
+                  <dt className="font-mono text-[11px] text-signal-400 break-all">{file}</dt>
+                  <dd className="text-xs text-soft leading-relaxed">{detail}</dd>
                 </div>
               ))}
             </dl>
@@ -78,10 +78,10 @@ export const HowItWorksModal: React.FC<HowItWorksModalProps> = ({ isOpen, onClos
 
           <section>
             <h3 className="label">3 — What changes for players</h3>
-            <ul className="mt-2 space-y-2 text-xs text-stone-300 leading-relaxed">
+            <ul className="mt-2 space-y-2 text-xs text-soft leading-relaxed">
               <li className="flex gap-2.5">
                 <span className="w-px bg-rule flex-shrink-0" />
-                <span>Install once in <code className="font-mono text-stone-200">mods</code>; it applies to every world and server profile.</span>
+                <span>Install once in <code className="font-mono text-paper">mods</code>; it applies to every world and server profile.</span>
               </li>
               <li className="flex gap-2.5">
                 <span className="w-px bg-rule flex-shrink-0" />
@@ -93,7 +93,7 @@ export const HowItWorksModal: React.FC<HowItWorksModalProps> = ({ isOpen, onClos
               </li>
               <li className="flex gap-2.5">
                 <span className="w-px bg-rule flex-shrink-0" />
-                <span><code className="font-mono text-stone-200">pack.mcmeta</code> keeps the pack_format your pack already declares; nothing is guessed.</span>
+                <span><code className="font-mono text-paper">pack.mcmeta</code> keeps the pack_format your pack already declares; nothing is guessed.</span>
               </li>
             </ul>
           </section>
@@ -108,7 +108,7 @@ export const HowItWorksModal: React.FC<HowItWorksModalProps> = ({ isOpen, onClos
           <button
             type="button"
             onClick={onClose}
-            className="h-8 px-3 rounded border border-rule text-xs text-stone-300 hover:text-paper hover:border-stone-600 transition-colors"
+            className="h-8 px-3 rounded border border-rule text-xs text-soft hover:text-paper hover:border-rule-strong transition-colors"
           >
             Close
           </button>

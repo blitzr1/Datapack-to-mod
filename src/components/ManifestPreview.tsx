@@ -89,12 +89,12 @@ export const ManifestPreview: React.FC<ManifestPreviewProps> = ({
         <button
           type="button"
           onClick={handleCopy}
-          className="inline-flex items-center gap-1.5 h-7 px-2 rounded border border-rule text-[11px] text-stone-300 hover:text-paper hover:border-stone-600 transition-colors"
+          className="inline-flex items-center gap-1.5 h-7 px-2 rounded border border-rule text-[11px] text-soft hover:text-paper hover:border-rule-strong transition-colors"
         >
           {copied ? (
             <>
-              <Check className="w-3 h-3 text-brass-400" />
-              <span className="text-brass-400">Copied</span>
+              <Check className="w-3 h-3 text-signal-400" />
+              <span className="text-signal-400">Copied</span>
             </>
           ) : (
             <>
@@ -113,8 +113,8 @@ export const ManifestPreview: React.FC<ManifestPreviewProps> = ({
             onClick={() => setActiveTab(tab)}
             className={`px-2.5 h-10 font-mono text-[11px] whitespace-nowrap border-b-2 -mb-px transition-colors ${
               activeTab === tab
-                ? 'border-brass text-paper'
-                : 'border-transparent text-muted hover:text-stone-300'
+                ? 'border-signal text-paper'
+                : 'border-transparent text-muted hover:text-soft'
             }`}
           >
             {TAB_LABEL[tab]}
@@ -124,7 +124,7 @@ export const ManifestPreview: React.FC<ManifestPreviewProps> = ({
 
       <p className="px-4 py-2.5 text-[11px] text-muted border-b border-rule">{active.desc}</p>
 
-      <pre className="max-h-[420px] overflow-auto bg-ground px-4 py-3 font-mono text-[11px] leading-relaxed text-stone-200 whitespace-pre">
+      <pre className="max-h-[420px] overflow-auto bg-ground px-4 py-3 font-mono text-[11px] leading-relaxed text-paper whitespace-pre">
         {active.content}
       </pre>
     </div>

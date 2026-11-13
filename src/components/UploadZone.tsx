@@ -61,8 +61,8 @@ export const UploadZone: React.FC<UploadZoneProps> = ({
       onDrop={handleDrop}
       className={`relative rounded border border-dashed transition-colors ${
         isDragOver
-          ? 'border-brass-500 bg-brass-950/20'
-          : 'border-stone-700 hover:border-stone-600'
+          ? 'border-signal-500 bg-signal-950/20'
+          : 'border-rule-strong hover:border-rule-strong'
       }`}
     >
       <input
@@ -90,13 +90,13 @@ export const UploadZone: React.FC<UploadZoneProps> = ({
 
       {isLoading ? (
         <div className="flex items-center justify-center gap-3 py-20">
-          <div className="w-3.5 h-3.5 border-2 border-rule border-t-brass-400 rounded-full animate-spin" />
+          <div className="w-3.5 h-3.5 border-2 border-rule border-t-signal-400 rounded-full animate-spin" />
           <p className="font-mono text-xs text-muted">reading archive…</p>
         </div>
       ) : (
         <div className="px-5 sm:px-8 py-10 sm:py-12 flex flex-col items-center text-center">
           <p className="font-mono text-[15px] sm:text-base text-paper">
-            drop <span className="text-brass-400">pack.zip</span> here
+            drop <span className="text-signal-400">pack.zip</span> here
           </p>
           <p className="mt-2.5 text-xs text-muted leading-relaxed max-w-[46ch]">
             or read an unzipped folder. Everything stays in browser memory.
@@ -106,7 +106,7 @@ export const UploadZone: React.FC<UploadZoneProps> = ({
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
-              className="inline-flex items-center gap-2 h-10 px-4 rounded bg-brass-500 hover:bg-brass-400 text-[#1A1410] font-semibold text-sm transition-colors"
+              className="inline-flex items-center gap-2 h-10 px-4 rounded bg-signal-600 hover:bg-signal-500 active:bg-signal-700 text-paper font-semibold text-sm transition-colors"
             >
               <FileArchive className="w-4 h-4" />
               Choose zip
@@ -115,7 +115,7 @@ export const UploadZone: React.FC<UploadZoneProps> = ({
             <button
               type="button"
               onClick={() => folderInputRef.current?.click()}
-              className="inline-flex items-center gap-2 h-10 px-4 rounded border border-rule text-sm text-stone-300 hover:text-paper hover:border-stone-600 transition-colors"
+              className="inline-flex items-center gap-2 h-10 px-4 rounded border border-rule text-sm text-soft hover:text-paper hover:border-rule-strong transition-colors"
             >
               <FolderUp className="w-4 h-4" />
               Choose folder
@@ -129,7 +129,7 @@ export const UploadZone: React.FC<UploadZoneProps> = ({
           <AlertCircle className="w-4 h-4 text-bad flex-shrink-0 mt-px" />
           <div className="min-w-0">
             <p className="text-xs font-semibold text-paper">Could not read that archive</p>
-            <p className="mt-0.5 text-xs text-stone-300 leading-relaxed break-words">{error}</p>
+            <p className="mt-0.5 text-xs text-soft leading-relaxed break-words">{error}</p>
           </div>
         </div>
       )}

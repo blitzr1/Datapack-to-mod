@@ -137,8 +137,8 @@ export const MetadataEditor: React.FC<MetadataEditorProps> = ({
             onClick={() => setActiveTab(id)}
             className={`inline-flex items-center gap-1.5 px-2.5 h-11 text-xs whitespace-nowrap border-b-2 -mb-px transition-colors ${
               activeTab === id
-                ? 'border-brass text-paper'
-                : 'border-transparent text-muted hover:text-stone-300'
+                ? 'border-signal text-paper'
+                : 'border-transparent text-muted hover:text-soft'
             }`}
           >
             <Icon className="w-3.5 h-3.5" />
@@ -154,7 +154,7 @@ export const MetadataEditor: React.FC<MetadataEditorProps> = ({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="label block mb-1.5">
-                  Display name <span className="text-brass-400">*</span>
+                  Display name <span className="text-signal-400">*</span>
                 </label>
                 <input
                   type="text"
@@ -170,7 +170,7 @@ export const MetadataEditor: React.FC<MetadataEditorProps> = ({
                     });
                   }}
                   placeholder="Timber & Vein Miner"
-                  className="w-full field px-3 py-2 text-xs text-paper placeholder:text-stone-500 focus:outline-none"
+                  className="w-full field px-3 py-2 text-xs text-paper placeholder:text-faint focus:outline-none"
                 />
                 <p className="mt-1 text-[11px] text-muted">
                   Shown in the in-game mod list and crash reports.
@@ -180,7 +180,7 @@ export const MetadataEditor: React.FC<MetadataEditorProps> = ({
               <div>
                 <div className="flex items-center justify-between gap-2 mb-1.5">
                   <label className="label">
-                    Mod id <span className="text-brass-400">*</span>
+                    Mod id <span className="text-signal-400">*</span>
                   </label>
                   {!isValidModId && (
                     <button
@@ -199,13 +199,13 @@ export const MetadataEditor: React.FC<MetadataEditorProps> = ({
                     value={metadata.modId}
                     onChange={(e) => onChange({ ...metadata, modId: e.target.value })}
                     placeholder="timber_axe"
-                    className={`w-full field pl-3 pr-8 py-2 font-mono text-[11px] text-paper placeholder:text-stone-500 focus:outline-none ${
+                    className={`w-full field pl-3 pr-8 py-2 font-mono text-[11px] text-paper placeholder:text-faint focus:outline-none ${
                       isValidModId ? '' : 'border-bad/70'
                     }`}
                   />
                   <span className="absolute right-2.5 top-1/2 -translate-y-1/2">
                     {isValidModId ? (
-                      <Check className="w-3.5 h-3.5 text-brass-400" />
+                      <Check className="w-3.5 h-3.5 text-signal-400" />
                     ) : (
                       <AlertTriangle className="w-3.5 h-3.5 text-bad" />
                     )}
@@ -227,7 +227,7 @@ export const MetadataEditor: React.FC<MetadataEditorProps> = ({
                   value={metadata.version}
                   onChange={(e) => onChange({ ...metadata, version: e.target.value })}
                   placeholder="1.0.0"
-                  className="w-full field px-3 py-2 font-mono text-[11px] text-paper placeholder:text-stone-500 focus:outline-none"
+                  className="w-full field px-3 py-2 font-mono text-[11px] text-paper placeholder:text-faint focus:outline-none"
                 />
                 <p className="mt-1 text-[11px] text-muted">Semver, e.g. 1.2.1-beta.</p>
               </div>
@@ -256,7 +256,7 @@ export const MetadataEditor: React.FC<MetadataEditorProps> = ({
                 value={metadata.description}
                 onChange={(e) => onChange({ ...metadata, description: e.target.value })}
                 placeholder="What the pack adds to the game"
-                className="w-full field px-3 py-2 text-xs text-paper placeholder:text-stone-500 focus:outline-none resize-y leading-relaxed"
+                className="w-full field px-3 py-2 text-xs text-paper placeholder:text-faint focus:outline-none resize-y leading-relaxed"
               />
             </div>
 
@@ -268,12 +268,12 @@ export const MetadataEditor: React.FC<MetadataEditorProps> = ({
                   value={authorInput}
                   onChange={(e) => setAuthorInput(e.target.value)}
                   placeholder="Name, then Enter"
-                  className="flex-1 field px-3 py-2 text-xs text-paper placeholder:text-stone-500 focus:outline-none"
+                  className="flex-1 field px-3 py-2 text-xs text-paper placeholder:text-faint focus:outline-none"
                 />
                 <button
                   type="button"
                   onClick={() => handleAddAuthor()}
-                  className="inline-flex items-center gap-1.5 h-8 px-2.5 rounded border border-rule text-[11px] text-stone-300 hover:text-paper hover:border-stone-600 transition-colors"
+                  className="inline-flex items-center gap-1.5 h-8 px-2.5 rounded border border-rule text-[11px] text-soft hover:text-paper hover:border-rule-strong transition-colors"
                 >
                   <Plus className="w-3 h-3" />
                   Add
@@ -284,7 +284,7 @@ export const MetadataEditor: React.FC<MetadataEditorProps> = ({
                 {metadata.authors.map((author, idx) => (
                   <span
                     key={idx}
-                    className="inline-flex items-center gap-1.5 pl-2 pr-1 h-7 rounded border border-rule bg-raised text-[11px] text-stone-200"
+                    className="inline-flex items-center gap-1.5 pl-2 pr-1 h-7 rounded border border-rule bg-raised text-[11px] text-paper"
                   >
                     {author}
                     <button
@@ -320,8 +320,8 @@ export const MetadataEditor: React.FC<MetadataEditorProps> = ({
                       onClick={() => onChange({ ...metadata, loader: loader.id })}
                       className={`text-left p-3 rounded border transition-colors ${
                         isSelected
-                          ? 'border-brass-700 bg-raised'
-                          : 'border-rule bg-panel hover:border-stone-600'
+                          ? 'border-signal-700 bg-raised'
+                          : 'border-rule bg-panel hover:border-rule-strong'
                       }`}
                     >
                       <div className="flex items-center gap-2">
@@ -330,7 +330,7 @@ export const MetadataEditor: React.FC<MetadataEditorProps> = ({
                           style={{ backgroundColor: LOADER_SWATCH[loader.id] }}
                         />
                         <span className="text-xs font-medium text-paper">{loader.name}</span>
-                        {isSelected && <Check className="w-3 h-3 text-brass-400 ml-auto" />}
+                        {isSelected && <Check className="w-3 h-3 text-signal-400 ml-auto" />}
                       </div>
                       <p className="mt-1 text-[11px] text-muted leading-relaxed">{loader.desc}</p>
                     </button>
@@ -442,7 +442,7 @@ export const MetadataEditor: React.FC<MetadataEditorProps> = ({
                   <button
                     type="button"
                     onClick={() => iconInputRef.current?.click()}
-                    className="inline-flex items-center gap-1.5 h-8 px-2.5 rounded bg-brass-500 hover:bg-brass-400 text-ground text-[11px] font-semibold transition-colors"
+                    className="inline-flex items-center gap-1.5 h-8 px-2.5 rounded bg-signal-600 hover:bg-signal-500 text-paper text-[11px] font-semibold transition-colors"
                   >
                     <Upload className="w-3 h-3" />
                     Upload image
@@ -452,7 +452,7 @@ export const MetadataEditor: React.FC<MetadataEditorProps> = ({
                     <button
                       type="button"
                       onClick={() => onChange({ ...metadata, iconDataUrl: null })}
-                      className="inline-flex items-center gap-1.5 h-8 px-2.5 rounded border border-rule text-[11px] text-stone-300 hover:text-paper hover:border-stone-600 transition-colors"
+                      className="inline-flex items-center gap-1.5 h-8 px-2.5 rounded border border-rule text-[11px] text-soft hover:text-paper hover:border-rule-strong transition-colors"
                     >
                       <RotateCcw className="w-3 h-3" />
                       Remove
@@ -496,7 +496,7 @@ export const MetadataEditor: React.FC<MetadataEditorProps> = ({
                 value={metadata.homepage}
                 onChange={(e) => onChange({ ...metadata, homepage: e.target.value })}
                 placeholder="https://modrinth.com/mod/your-mod"
-                className="w-full field px-3 py-2 font-mono text-[11px] text-paper placeholder:text-stone-500 focus:outline-none"
+                className="w-full field px-3 py-2 font-mono text-[11px] text-paper placeholder:text-faint focus:outline-none"
               />
             </div>
 
@@ -509,7 +509,7 @@ export const MetadataEditor: React.FC<MetadataEditorProps> = ({
                 value={metadata.sources}
                 onChange={(e) => onChange({ ...metadata, sources: e.target.value })}
                 placeholder="https://github.com/username/repository"
-                className="w-full field px-3 py-2 font-mono text-[11px] text-paper placeholder:text-stone-500 focus:outline-none"
+                className="w-full field px-3 py-2 font-mono text-[11px] text-paper placeholder:text-faint focus:outline-none"
               />
             </div>
 
@@ -522,7 +522,7 @@ export const MetadataEditor: React.FC<MetadataEditorProps> = ({
                 value={metadata.issues}
                 onChange={(e) => onChange({ ...metadata, issues: e.target.value })}
                 placeholder="https://github.com/username/repository/issues"
-                className="w-full field px-3 py-2 font-mono text-[11px] text-paper placeholder:text-stone-500 focus:outline-none"
+                className="w-full field px-3 py-2 font-mono text-[11px] text-paper placeholder:text-faint focus:outline-none"
               />
             </div>
           </div>
@@ -537,14 +537,14 @@ export const MetadataEditor: React.FC<MetadataEditorProps> = ({
           <div className="space-y-3">
             <label
               htmlFor="includeMcmeta"
-              className="flex items-start gap-3 p-3 rounded border border-rule bg-raised cursor-pointer hover:border-stone-600 transition-colors"
+              className="flex items-start gap-3 p-3 rounded border border-rule bg-raised cursor-pointer hover:border-rule-strong transition-colors"
             >
               <input
                 id="includeMcmeta"
                 type="checkbox"
                 checked={metadata.includePackMcmeta}
                 onChange={(e) => onChange({ ...metadata, includePackMcmeta: e.target.checked })}
-                className="mt-0.5 w-3.5 h-3.5 accent-brass-500 cursor-pointer"
+                className="mt-0.5 w-3.5 h-3.5 accent-signal-500 cursor-pointer"
               />
               <span className="min-w-0">
                 <span className="block text-xs font-medium text-paper">
@@ -552,21 +552,21 @@ export const MetadataEditor: React.FC<MetadataEditorProps> = ({
                 </span>
                 <span className="block mt-0.5 text-[11px] text-muted leading-relaxed">
                   Also lets the jar work when dropped into a world's{' '}
-                  <code className="font-mono text-stone-300">datapacks/</code> folder.
+                  <code className="font-mono text-soft">datapacks/</code> folder.
                 </span>
               </span>
             </label>
 
             <label
               htmlFor="requireResourceLoader"
-              className="flex items-start gap-3 p-3 rounded border border-rule bg-raised cursor-pointer hover:border-stone-600 transition-colors"
+              className="flex items-start gap-3 p-3 rounded border border-rule bg-raised cursor-pointer hover:border-rule-strong transition-colors"
             >
               <input
                 id="requireResourceLoader"
                 type="checkbox"
                 checked={metadata.requireResourceLoader}
                 onChange={(e) => onChange({ ...metadata, requireResourceLoader: e.target.checked })}
-                className="mt-0.5 w-3.5 h-3.5 accent-brass-500 cursor-pointer"
+                className="mt-0.5 w-3.5 h-3.5 accent-signal-500 cursor-pointer"
               />
               <span className="min-w-0">
                 <span className="block text-xs font-medium text-paper">
@@ -574,7 +574,7 @@ export const MetadataEditor: React.FC<MetadataEditorProps> = ({
                 </span>
                 <span className="block mt-0.5 text-[11px] text-muted leading-relaxed">
                   The Fabric module that reads a mod's{' '}
-                  <code className="font-mono text-stone-300">data/</code> directory. Fabric API ships
+                  <code className="font-mono text-soft">data/</code> directory. Fabric API ships
                   it.
                 </span>
               </span>

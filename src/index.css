@@ -8,8 +8,8 @@
   }
 
   body {
-    background-color: #14120F;
-    color: #EFE9DF;
+    background-color: #0B0D10;
+    color: #E6EDF5;
     font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -17,12 +17,12 @@
   }
 
   ::selection {
-    background: rgba(200, 154, 78, 0.28);
-    color: #F6F1E8;
+    background: rgba(59, 130, 246, 0.28);
+    color: #F2F7FC;
   }
 
   :focus-visible {
-    outline: 2px solid #C89A4E;
+    outline: 2px solid #3B82F6;
     outline-offset: 2px;
   }
 
@@ -32,25 +32,25 @@
   }
 
   ::-webkit-scrollbar-track {
-    background: #14120F;
+    background: #0B0D10;
   }
 
   ::-webkit-scrollbar-thumb {
-    background: #2E2A24;
-    border: 2px solid #14120F;
+    background: #232A33;
+    border: 2px solid #0B0D10;
     border-radius: 9999px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: #4A4238;
+    background: #3A4350;
   }
 }
 
 /* Flat panels and fields. Depth comes from one soft shadow and a hairline rule,
    never a coloured halo. */
 .panel {
-  background: #1B1815;
-  border: 1px solid #2E2A24;
+  background: #12151A;
+  border: 1px solid #232A33;
   border-radius: 6px;
 }
 
@@ -59,20 +59,20 @@
 }
 
 .panel-hover:hover {
-  background: #221E1A;
-  border-color: #3C352C;
+  background: #171C23;
+  border-color: #303845;
 }
 
 .field {
-  background: #16130F;
-  border: 1px solid #2E2A24;
+  background: #0E1116;
+  border: 1px solid #232A33;
   border-radius: 4px;
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .field:focus {
-  border-color: #8A6A32;
-  box-shadow: 0 0 0 3px rgba(200, 154, 78, 0.12);
+  border-color: #2563EB;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.16);
   outline: none;
 }
 
@@ -83,7 +83,7 @@
   font-weight: 500;
   letter-spacing: 0.09em;
   text-transform: uppercase;
-  color: #9C9286;
+  color: #8B95A5;
 }
 
 .tnum {
@@ -108,7 +108,7 @@
   top: 0;
   width: 2.2rem;
   text-align: right;
-  color: rgba(239, 233, 223, 0.22);
+  color: rgba(230, 237, 245, 0.22);
   user-select: none;
   font-family: 'JetBrains Mono', monospace;
   font-size: 0.75rem;

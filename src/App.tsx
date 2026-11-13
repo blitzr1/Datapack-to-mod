@@ -232,8 +232,8 @@ export function App() {
     <div className="min-h-screen flex flex-col bg-ground text-paper">
       {/* Global Drag & Drop Full-screen Overlay */}
       {isWindowDragging && (
-        <div className="fixed inset-0 z-50 bg-ground/95 border-2 border-dashed border-brass-600 flex flex-col items-center justify-center p-6 text-center pointer-events-none">
-          <Upload className="w-8 h-8 text-brass-400 mb-4" />
+        <div className="fixed inset-0 z-50 bg-ground/95 border-2 border-dashed border-signal-600 flex flex-col items-center justify-center p-6 text-center pointer-events-none">
+          <Upload className="w-8 h-8 text-signal-400 mb-4" />
           <h3 className="text-xl font-semibold text-paper">Drop your datapack</h3>
           <p className="mt-1 font-mono text-xs text-muted">release to read the zip or folder</p>
         </div>
@@ -277,7 +277,7 @@ export function App() {
               ].map(([term, detail]) => (
                 <div key={term} className="grid grid-cols-1 sm:grid-cols-[104px_1fr] gap-1 sm:gap-4 py-3.5 border-b border-rule items-baseline">
                   <dt className="label">{term}</dt>
-                  <dd className="text-xs text-stone-300 leading-relaxed">{detail}</dd>
+                  <dd className="text-xs text-soft leading-relaxed">{detail}</dd>
                 </div>
               ))}
             </dl>
@@ -300,7 +300,7 @@ export function App() {
                   type="button"
                   onClick={handleStartBuild}
                   disabled={isBuilding}
-                  className="inline-flex items-center gap-2 h-10 px-4 rounded bg-brass-500 hover:bg-brass-400 active:bg-brass-600 text-ground font-semibold text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="inline-flex items-center gap-2 h-10 px-4 rounded bg-signal-600 hover:bg-signal-500 active:bg-signal-700 text-paper font-semibold text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <Download className="w-4 h-4" />
                   {isBuilding ? 'Building…' : 'Build jar'}
@@ -358,19 +358,19 @@ export function App() {
                       <div
                         key={format}
                         className={`px-1 pt-1.5 border-t-2 ${
-                          active ? 'border-brass' : 'border-rule'
+                          active ? 'border-signal' : 'border-rule'
                         }`}
                       >
                         <div
                           className={`font-mono text-[11px] leading-none tnum ${
-                            active ? 'text-brass' : passed ? 'text-stone-400' : 'text-stone-600'
+                            active ? 'text-signal' : passed ? 'text-muted' : 'text-faint'
                           }`}
                         >
                           {format}
                         </div>
                         <div
                           className={`text-[11px] leading-tight mt-1 truncate ${
-                            active ? 'text-stone-300' : 'text-muted'
+                            active ? 'text-soft' : 'text-muted'
                           }`}
                         >
                           {getVersionByPackFormat(format).version}
@@ -385,7 +385,7 @@ export function App() {
                     type="button"
                     onClick={handleStartBuild}
                     disabled={isBuilding}
-                    className="w-full inline-flex items-center justify-center gap-2 h-10 rounded bg-brass-500 hover:bg-brass-400 active:bg-brass-600 text-ground font-semibold text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full inline-flex items-center justify-center gap-2 h-10 rounded bg-signal-600 hover:bg-signal-500 active:bg-signal-700 text-paper font-semibold text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <Download className="w-4 h-4" />
                     {isBuilding ? 'Building…' : 'Build jar'}
@@ -421,7 +421,7 @@ export function App() {
                     className={`h-8 px-3 rounded text-xs whitespace-nowrap transition-colors ${
                       activeWorkspaceTab === id
                         ? 'bg-raised text-paper'
-                        : 'text-muted hover:text-stone-300'
+                        : 'text-muted hover:text-soft'
                     }`}
                   >
                     {label}

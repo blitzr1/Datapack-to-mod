@@ -36,9 +36,9 @@ export const Header: React.FC<HeaderProps> = ({
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
           className="flex items-center gap-2.5 text-left"
         >
-          <span className="w-1 h-4 bg-brass-500" />
+          <span className="w-1 h-4 bg-signal-500" />
           <span className="font-mono text-[13px] text-paper tracking-[0.02em]">
-            datapack<span className="text-brass-500 px-1">→</span>mod
+            datapack<span className="text-signal-500 px-1">→</span>mod
           </span>
           <span className="label hidden sm:inline border-l border-rule pl-2.5">
             converter
@@ -59,12 +59,12 @@ export const Header: React.FC<HeaderProps> = ({
             type="button"
             onClick={handleShare}
             title="Copy this app's link"
-            className="inline-flex items-center justify-center gap-1.5 h-8 px-2.5 rounded border border-rule text-xs text-muted hover:text-paper hover:border-stone-600 transition-colors"
+            className="inline-flex items-center justify-center gap-1.5 h-8 px-2.5 rounded border border-rule text-xs text-muted hover:text-paper hover:border-rule-strong transition-colors"
           >
             {copied ? (
               <>
-                <Check className="w-3.5 h-3.5 text-brass-400" />
-                <span className="hidden sm:inline text-brass-400">Copied</span>
+                <Check className="w-3.5 h-3.5 text-signal-400" />
+                <span className="hidden sm:inline text-signal-400">Copied</span>
               </>
             ) : (
               <>
@@ -78,7 +78,7 @@ export const Header: React.FC<HeaderProps> = ({
             <button
               type="button"
               onClick={onReset}
-              className="inline-flex items-center justify-center gap-1.5 h-8 px-2.5 rounded border border-rule text-xs text-muted hover:text-paper hover:border-stone-600 transition-colors"
+              className="inline-flex items-center justify-center gap-1.5 h-8 px-2.5 rounded border border-rule text-xs text-muted hover:text-paper hover:border-rule-strong transition-colors"
             >
               <RefreshCw className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">New pack</span>

@@ -5,6 +5,3 @@ dist/
 .env
 .env.local
 *.tsbuildinfo
-DESIGN.md
-PRODUCT.md
-.impeccable/
