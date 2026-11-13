@@ -14,7 +14,7 @@ import {
 } from './utils/datapackParser';
 import { buildModJar, triggerDownload } from './utils/jarBuilder';
 import { getVersionByPackFormat } from './utils/packFormatMap';
-import type { ModLoader, ModMetadata, PackFile, DatapackSummary, SamplePack } from './types';
+import type { ModLoader, ModMetadata, PackFile, DatapackSummary } from './types';
 import { Package, Download, Upload } from 'lucide-react';
 
 const LOADER_SWATCH: Record<ModLoader, string> = {
@@ -167,80 +167,6 @@ export function App() {
     }
   };
 
-  const handleSampleSelected = (sample: SamplePack) => {
-    const filesMap = new Map<string, PackFile>();
-    let totalSize = 0;
-    const namespaces = new Set<string>();
-
-    const counts = {
-      functions: 0,
-      recipes: 0,
-      lootTables: 0,
-      tags: 0,
-      advancements: 0,
-      predicates: 0,
-      structures: 0,
-      worldgen: 0,
-      other: 0,
-    };
-
-    Object.entries(sample.files).forEach(([path, content]) => {
-      const raw = new TextEncoder().encode(content);
-      totalSize += raw.byteLength;
-
-      filesMap.set(path, {
-        path,
-        size: raw.byteLength,
-        isBinary: false,
-        content,
-        raw
-      });
-
-      const match = path.match(/^data\/([^/]+)\/(.+)$/);
-      if (match) {
-        namespaces.add(match[1]);
-        const sub = match[2];
-        if (sub.includes('function')) counts.functions++;
-        else if (sub.includes('recipe')) counts.recipes++;
-        else if (sub.includes('loot_table')) counts.lootTables++;
-        else if (sub.includes('tag')) counts.tags++;
-        else if (sub.includes('advancement')) counts.advancements++;
-        else counts.other++;
-      }
-    });
-
-    const modId = sample.id;
-    const modName = sample.name;
-
-    setFiles(filesMap);
-    setSummary({
-      packFormat: 48,
-      originalDescription: sample.description,
-      namespaces: Array.from(namespaces),
-      totalFiles: filesMap.size,
-      totalSize,
-      counts
-    });
-
-    setMetadata({
-      modId,
-      modName,
-      version: '1.0.0',
-      description: sample.description,
-      authors: ['Datapack Creator'],
-      license: 'MIT',
-      homepage: '',
-      sources: '',
-      issues: '',
-      loader: 'universal',
-      targetMcVersion: '1.21',
-      environment: 'client_server',
-      includePackMcmeta: true,
-      requireResourceLoader: true,
-      iconDataUrl: null
-    });
-  };
-
   const handleDeleteFile = (path: string) => {
     if (!files || !summary) return;
     const nextFiles = new Map(files);
@@ -273,7 +199,7 @@ export function App() {
       setBuiltJarSize(result.size);
       setIsBuildComplete(true);
       setBuildProgress(100);
-      setBuildStatus('Ready! Your Minecraft Mod JAR is compiled.');
+      setBuildStatus('Jar compiled in browser memory.');
     } catch (err: any) {
       console.error(err);
       setBuildStatus(`Error: ${err?.message || 'Failed to compile JAR'}`);
@@ -322,13 +248,13 @@ export function App() {
       <main className="flex-1 w-full max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         {!files || !metadata || !summary ? (
           /* ================= UPLOAD SCREEN ================= */
-          <div className="max-w-3xl mx-auto space-y-10">
+          <div className="max-w-[880px] mx-auto space-y-9">
             <div>
-              <h1 className="text-[28px] sm:text-[34px] leading-[1.15] font-semibold tracking-[-0.02em] text-paper">
+              <h1 className="text-[30px] sm:text-[42px] lg:text-[48px] leading-[1.06] font-semibold tracking-[-0.025em] text-paper">
                 A datapack zip in.<br />
                 A loadable mod jar out.
               </h1>
-              <p className="mt-3 text-sm text-muted max-w-[62ch] leading-relaxed">
+              <p className="mt-4 text-sm text-muted max-w-[58ch] leading-relaxed">
                 Drop the zip you exported from your pack editor. Everything is packaged in your browser
                 memory — the archive is never uploaded, and the payload is copied byte for byte.
               </p>
@@ -337,7 +263,6 @@ export function App() {
             <UploadZone
               onFileLoaded={handleFileLoaded}
               onFilesListLoaded={handleFilesListLoaded}
-              onSampleSelected={handleSampleSelected}
               isLoading={isLoading}
               error={error}
             />
@@ -350,7 +275,7 @@ export function App() {
                 ['Compatibility', 'pack.mcmeta keeps the pack_format and supported_formats your pack already declares.'],
                 ['Privacy', 'No upload, no backend, no analytics. The browser is the whole pipeline.'],
               ].map(([term, detail]) => (
-                <div key={term} className="grid grid-cols-[92px_1fr] gap-4 py-3 border-b border-rule items-baseline">
+                <div key={term} className="grid grid-cols-1 sm:grid-cols-[104px_1fr] gap-1 sm:gap-4 py-3.5 border-b border-rule items-baseline">
                   <dt className="label">{term}</dt>
                   <dd className="text-xs text-stone-300 leading-relaxed">{detail}</dd>
                 </div>

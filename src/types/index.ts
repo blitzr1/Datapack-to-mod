@@ -59,10 +59,3 @@ export interface DatapackSummary {
     other: number;
   };
 }
-
-export interface SamplePack {
-  id: string;
-  name: string;
-  description: string;
-  files: Record<string, string>; // path -> content
-}

@@ -126,14 +126,15 @@ export const ConvertModal: React.FC<ConvertModalProps> = ({
                   <li className="flex gap-2.5">
                     <span className="font-mono text-[11px] text-muted pt-0.5">03</span>
                     <span>
-                      Start the loader you targeted. Fabric also needs the resource-loader mod named in
+                      Start the loader you targeted. Fabric and Quilt also need the Fabric API mod for
+                      the resource-loader dependency in
                       <code className="font-mono text-stone-200"> fabric.mod.json</code>.
                     </span>
                   </li>
                 </ol>
                 <p className="mt-3 text-[11px] text-muted leading-relaxed">
-                  Loading was not tested against a real game instance — if the jar does not appear in the
-                  mod list, check the loader log before reporting the pack as broken.
+                  Tested on Fabric, Quilt, Forge, and NeoForge 1.21.5 servers. If the jar does not appear
+                  in the mod list, check the loader log before reporting the pack as broken.
                 </p>
               </div>
 

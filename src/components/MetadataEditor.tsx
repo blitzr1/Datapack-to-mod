@@ -44,16 +44,6 @@ const LOADER_SWATCH: Record<ModLoader, string> = {
   neoforge: '#7C9FAE',
 };
 
-// Presets draw a flat tile with an initial: the jar only needs a recognisable
-// 128px square, and this keeps the generator dependency-free.
-const PRESET_TONES: Record<'emerald' | 'diamond' | 'redstone' | 'pickaxe' | 'chest', [string, string]> = {
-  emerald: ['#6E9E6A', 'E'],
-  diamond: ['#7C9FAE', 'D'],
-  redstone: ['#C4624F', 'R'],
-  pickaxe: ['#C8A97E', 'T'],
-  chest: ['#D08A3E', 'S'],
-};
-
 export const MetadataEditor: React.FC<MetadataEditorProps> = ({
   metadata,
   onChange,
@@ -107,27 +97,6 @@ export const MetadataEditor: React.FC<MetadataEditorProps> = ({
       };
       reader.readAsDataURL(e.target.files[0]);
     }
-  };
-
-  const generatePresetIcon = (type: keyof typeof PRESET_TONES) => {
-    const canvas = document.createElement('canvas');
-    canvas.width = 128;
-    canvas.height = 128;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    const [tone, initial] = PRESET_TONES[type];
-    ctx.fillStyle = '#1B1815';
-    ctx.fillRect(0, 0, 128, 128);
-    ctx.fillStyle = tone;
-    ctx.fillRect(16, 16, 96, 96);
-    ctx.fillStyle = '#14120F';
-    ctx.font = 'bold 56px monospace';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(initial, 64, 66);
-
-    onChange({ ...metadata, iconDataUrl: canvas.toDataURL('image/png') });
   };
 
   const loadersList: Array<{ id: ModLoader; name: string; desc: string }> = [
@@ -493,27 +462,25 @@ export const MetadataEditor: React.FC<MetadataEditorProps> = ({
               </div>
             </div>
 
-            <div>
-              <span className="label block mb-2">Presets</span>
-              <div className="grid grid-cols-5 gap-2">
-                {(Object.keys(PRESET_TONES) as Array<keyof typeof PRESET_TONES>).map((key) => (
-                  <button
-                    key={key}
-                    type="button"
-                    onClick={() => generatePresetIcon(key)}
-                    className="p-2.5 rounded border border-rule bg-panel hover:border-stone-600 transition-colors group"
-                  >
-                    <span
-                      className="block w-7 h-7 mx-auto rounded-sm"
-                      style={{ backgroundColor: PRESET_TONES[key][0] }}
-                    />
-                    <span className="mt-1.5 block text-center text-[11px] text-muted group-hover:text-stone-300 capitalize">
-                      {key}
-                    </span>
-                  </button>
-                ))}
+            {metadata.iconDataUrl && (
+              <div className="flex flex-wrap items-center gap-x-6 gap-y-3 px-1">
+                <span className="label">Menu size</span>
+                <div className="flex items-end gap-5">
+                  {[64, 32].map((size) => (
+                    <div key={size} className="flex flex-col items-center gap-2">
+                      <img
+                        src={metadata.iconDataUrl ?? undefined}
+                        alt=""
+                        width={size}
+                        height={size}
+                        className="border border-rule bg-ground [image-rendering:pixelated]"
+                      />
+                      <span className="font-mono text-[11px] text-muted tnum">{size}px</span>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
           </div>
         )}
 
