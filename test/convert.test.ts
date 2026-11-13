@@ -81,6 +81,29 @@ test('binary files survive the jar round-trip byte for byte', async () => {
   }
 });
 
+test('suggested mod id comes from the pack namespace, not the zip name', async () => {
+  const zip = new JSZip();
+  zip.file('pack.mcmeta', JSON.stringify({ pack: { pack_format: 71, description: 'Timber' } }));
+  zip.file('data/timber/function/tick.mcfunction', 'say hi\n');
+  zip.file('data/timber/recipe/planks.json', '{}');
+  zip.file('data/minecraft/tags/function/load.json', '{}');
+
+  const parsed = await parseDatapackZip(new Blob([new Uint8Array(await zip.generateAsync({ type: 'uint8array' }))]), 'datapack.zip');
+
+  expect(parsed.suggestedMetadata.modId).toBe('timber');
+  expect(parsed.suggestedMetadata.modName).toBe('Timber');
+});
+
+test('suggested mod id falls back to the zip name when only minecraft is used', async () => {
+  const zip = new JSZip();
+  zip.file('pack.mcmeta', JSON.stringify({ pack: { pack_format: 71, description: 'Tags only' } }));
+  zip.file('data/minecraft/tags/function/load.json', '{}');
+
+  const parsed = await parseDatapackZip(new Blob([new Uint8Array(await zip.generateAsync({ type: 'uint8array' }))]), 'fallback_pack.zip');
+
+  expect(parsed.suggestedMetadata.modId).toBe('fallback_pack');
+});
+
 test('forge and neoforge toml round-trip hostile metadata', async () => {
   for (const toml of [generateForgeModsToml(baseMeta), generateNeoForgeModsToml(baseMeta)]) {
     expect(basicValue(toml, 'modId')).toEqual(['timber_vein']);

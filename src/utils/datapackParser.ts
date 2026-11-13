@@ -225,7 +225,7 @@ function analyzeAndBuildResult(
   }
 
   // Count namespaces and types of files
-  const namespaces = new Set<string>();
+  const namespaceCounts = new Map<string, number>();
   const counts = {
     functions: 0,
     recipes: 0,
@@ -249,7 +249,7 @@ function analyzeAndBuildResult(
     if (dataMatch) {
       const ns = dataMatch[1];
       const subPath = dataMatch[2];
-      namespaces.add(ns);
+      namespaceCounts.set(ns, (namespaceCounts.get(ns) ?? 0) + 1);
 
       if (subPath.startsWith('function') || subPath.endsWith('.mcfunction')) {
         counts.functions++;
@@ -291,8 +291,14 @@ function analyzeAndBuildResult(
     }
   }
 
-  // Auto-generate clean mod ID and display name
-  const rawCleanName = sourceName
+  // Pack-internal identity beats the zip filename. A download named
+  // "datapack.zip" should still suggest timber, not datapack.
+  const primaryNamespace = [...namespaceCounts.entries()]
+    .filter(([ns]) => ns !== 'minecraft')
+    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))[0]?.[0];
+
+  const identitySource = primaryNamespace ?? sourceName;
+  const rawCleanName = identitySource
     .replace(/\.zip$/i, '')
     .replace(/[_-]+/g, ' ')
     .trim();
@@ -309,7 +315,7 @@ function analyzeAndBuildResult(
     summary: {
       packFormat,
       originalDescription,
-      namespaces: Array.from(namespaces),
+      namespaces: Array.from(namespaceCounts.keys()),
       totalFiles: filesMap.size,
       totalSize,
       counts
