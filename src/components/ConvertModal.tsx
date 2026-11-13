@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Download, CheckCircle, Package, Folder, X } from 'lucide-react';
+import { Download, Package, X } from 'lucide-react';
 import type { ModMetadata } from '../types';
 
 interface ConvertModalProps {
@@ -47,113 +47,103 @@ export const ConvertModal: React.FC<ConvertModalProps> = ({
   return (
     <div
       onClick={onClose}
-      className="fixed inset-0 z-50 bg-black/80 backdrop-blur-xl flex items-center justify-center p-4 animate-in fade-in duration-200"
+      className="fixed inset-0 z-50 bg-ground/90 flex items-center justify-center p-4"
     >
       <div
         onClick={(e) => e.stopPropagation()}
-
-        className="w-full max-w-xl bg-[#12161f] border border-white/15 rounded-3xl overflow-hidden shadow-2xl relative animate-in zoom-in-95 duration-200"
+        role="dialog"
+        aria-modal="true"
+        aria-label={isComplete ? 'Mod jar ready' : 'Building mod jar'}
+        className="w-full max-w-lg panel bg-panel shadow-panel overflow-hidden"
       >
-        {/* Close Button */}
-        <button
-          onClick={onClose}
-          className="absolute right-4 top-4 p-2 text-slate-400 hover:text-white rounded-xl bg-white/5 hover:bg-white/10 transition-colors z-10"
-        >
-          <X className="w-5 h-5" />
-        </button>
+        <header className="flex items-center justify-between gap-3 px-5 h-12 border-b border-rule">
+          <span className="label">{isComplete ? 'Build complete' : 'Building'}</span>
+          <button
+            type="button"
+            onClick={onClose}
+            className="p-1 -mr-1 rounded text-muted hover:text-paper transition-colors"
+            aria-label="Close"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </header>
 
-        <div className="p-6 sm:p-8 space-y-6">
-          {/* Header */}
-          <div className="text-center space-y-2">
-            <div className="w-16 h-16 mx-auto rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shadow-mc-glow">
-              {isComplete ? (
-                <CheckCircle className="w-8 h-8 text-emerald-400 animate-bounce" />
-              ) : (
-                <Package className="w-8 h-8 text-emerald-400 animate-pulse" />
-              )}
-            </div>
-
-            <h3 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
-              {isComplete ? 'Mod JAR Ready!' : 'Compiling Mod JAR...'}
-            </h3>
-            <p className="text-xs sm:text-sm text-slate-400">
-              {statusText}
+        <div className="p-5 space-y-5">
+          <div>
+            <p className="font-mono text-sm text-paper break-all">
+              {isComplete ? fileName : 'assembling descriptors and payload…'}
             </p>
+            <p className="mt-1.5 text-xs text-muted leading-relaxed">{statusText}</p>
           </div>
 
-          {/* Progress Bar */}
-          <div className="space-y-2">
-            <div className="w-full bg-white/5 h-3 rounded-full overflow-hidden p-0.5 border border-white/10">
+          {/* Progress: a ruled track, not a glowing pill */}
+          <div>
+            <div className="h-1 w-full bg-rule overflow-hidden">
               <div
-                className="bg-gradient-to-r from-emerald-500 to-teal-400 h-full rounded-full transition-all duration-300 shadow-mc-glow"
+                className="h-full bg-brass-500 transition-[width] duration-300"
                 style={{ width: `${progress}%` }}
               />
             </div>
-            <div className="flex justify-between text-[11px] font-mono text-slate-400">
-              <span>{statusText}</span>
+            <div className="mt-2 flex justify-between font-mono text-[11px] text-muted tnum">
+              <span>{isComplete ? formatFileSize(jarSize) : 'working'}</span>
               <span>{progress}%</span>
             </div>
           </div>
 
-          {/* Complete State Actions */}
           {isComplete && (
-            <div className="space-y-6 pt-2 animate-in fade-in duration-300">
-              {/* Mod File Card */}
-              <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/10 flex items-center justify-between">
-                <div className="flex items-center gap-3 min-w-0">
-                  <div className="w-10 h-10 rounded-xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center flex-shrink-0 text-emerald-400">
-                    <Package className="w-5 h-5" />
-                  </div>
-                  <div className="min-w-0">
-                    <h4 className="font-mono text-sm font-semibold text-white truncate">
-                      {fileName}
-                    </h4>
-                    <p className="text-xs text-slate-400">
-                      {formatFileSize(jarSize)} • {metadata.loader.toUpperCase()} Ready
-                    </p>
-                  </div>
+            <div className="space-y-5">
+              <div className="flex items-center justify-between gap-3 rounded border border-rule bg-ground px-3 py-2.5">
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <Package className="w-4 h-4 text-brass-400 flex-shrink-0" />
+                  <span className="font-mono text-[11px] text-stone-300 truncate">
+                    {metadata.loader === 'universal' ? '4 manifests + payload' : `${metadata.loader} manifest + payload`}
+                  </span>
                 </div>
-
                 <button
                   type="button"
                   onClick={onDownload}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white font-semibold text-xs sm:text-sm transition-all shadow-lg shadow-emerald-600/30 flex-shrink-0 ml-3"
+                  className="inline-flex items-center gap-2 h-9 px-3.5 rounded bg-brass-500 hover:bg-brass-400 text-[#1A1410] font-semibold text-xs transition-colors flex-shrink-0"
                 >
-                  <Download className="w-4 h-4" />
-                  Download JAR
+                  <Download className="w-3.5 h-3.5" />
+                  Download jar
                 </button>
               </div>
 
-              {/* Installation Instructions */}
-              <div className="space-y-3 p-4 sm:p-5 rounded-2xl bg-[#0a0d12] border border-white/10 text-xs text-slate-300">
-                <h5 className="font-semibold text-white flex items-center gap-2 text-xs uppercase tracking-wider">
-                  <Folder className="w-3.5 h-3.5 text-emerald-400" />
-                  How to Install into Minecraft:
-                </h5>
-
-                <ol className="list-decimal list-inside space-y-2 text-slate-400 leading-relaxed">
-                  <li>
-                    Press <kbd className="px-1.5 py-0.5 bg-white/10 rounded font-mono text-[10px] text-white">Win + R</kbd> and type <code className="text-emerald-400 font-mono">%appdata%\.minecraft\mods</code>
+              <div className="border-t border-rule pt-4">
+                <h3 className="label">Install</h3>
+                <ol className="mt-2.5 space-y-2 text-xs text-stone-300 leading-relaxed">
+                  <li className="flex gap-2.5">
+                    <span className="font-mono text-[11px] text-muted pt-0.5">01</span>
+                    <span>
+                      Open <code className="font-mono text-stone-200">%appdata%\.minecraft\mods</code> —
+                      or the <code className="font-mono text-stone-200">mods</code> folder of your instance.
+                    </span>
                   </li>
-                  <li>
-                    Drop <span className="text-white font-mono">{fileName}</span> directly into your <code className="text-emerald-400">mods</code> folder.
+                  <li className="flex gap-2.5">
+                    <span className="font-mono text-[11px] text-muted pt-0.5">02</span>
+                    <span>Place <span className="font-mono text-stone-200 break-all">{fileName}</span> inside it.</span>
                   </li>
-                  <li>
-                    Launch Minecraft with your mod loader (<strong>Fabric</strong> with Fabric API, <strong>NeoForge</strong>, or <strong>Forge</strong>).
-                  </li>
-                  <li>
-                    Done! The datapack content, recipes, and functions will load automatically.
+                  <li className="flex gap-2.5">
+                    <span className="font-mono text-[11px] text-muted pt-0.5">03</span>
+                    <span>
+                      Start the loader you targeted. Fabric also needs the resource-loader mod named in
+                      <code className="font-mono text-stone-200"> fabric.mod.json</code>.
+                    </span>
                   </li>
                 </ol>
+                <p className="mt-3 text-[11px] text-muted leading-relaxed">
+                  Loading was not tested against a real game instance — if the jar does not appear in the
+                  mod list, check the loader log before reporting the pack as broken.
+                </p>
               </div>
 
-              <div className="flex justify-end gap-3">
+              <div className="flex justify-end">
                 <button
                   type="button"
                   onClick={onClose}
-                  className="px-5 py-2 rounded-xl bg-white/10 hover:bg-white/15 text-slate-200 text-xs font-medium transition-colors"
+                  className="h-9 px-3.5 rounded border border-rule text-xs text-stone-300 hover:text-paper hover:border-stone-600 transition-colors"
                 >
-                  Back to Editor
+                  Back to editor
                 </button>
               </div>
             </div>

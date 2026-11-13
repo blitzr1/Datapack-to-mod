@@ -8,123 +8,86 @@
   }
 
   body {
-    background-color: #080a0e;
-    color: #f1f5f9;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background-color: #14120F;
+    color: #EFE9DF;
+    font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overflow-x: clip;
   }
-}
 
-/* Custom modern sleek scrollbar */
-::-webkit-scrollbar {
-  width: 7px;
-  height: 7px;
-}
-
-::-webkit-scrollbar-track {
-  background: rgba(10, 13, 18, 0.7);
-}
-
-::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.16);
-  border-radius: 9999px;
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  transition: all 0.2s ease;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(16, 185, 129, 0.55);
-  box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
-}
-
-/* Glassmorphism & Modern Blur Utilities */
-.glass-panel {
-  background: rgba(16, 20, 27, 0.65);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-}
-
-.glass-panel-elevated {
-  background: rgba(19, 24, 34, 0.75);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: 0 16px 48px -8px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05);
-}
-
-.glass-panel-hover {
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.glass-panel-hover:hover {
-  background: rgba(26, 33, 46, 0.85);
-  border-color: rgba(16, 185, 129, 0.4);
-  box-shadow: 0 12px 36px -8px rgba(16, 185, 129, 0.18), 0 0 0 1px rgba(16, 185, 129, 0.2);
-  transform: translateY(-2px);
-}
-
-.glass-input {
-  background: rgba(12, 15, 21, 0.7);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.glass-input:focus {
-  background: rgba(16, 21, 30, 0.9);
-  border-color: rgba(16, 185, 129, 0.6);
-  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15), 0 4px 12px rgba(0, 0, 0, 0.2);
-}
-
-/* Background floating animation keyframes */
-@keyframes float-slow {
-  0%, 100% {
-    transform: translate(0px, 0px) scale(1);
+  ::selection {
+    background: rgba(200, 154, 78, 0.28);
+    color: #F6F1E8;
   }
-  50% {
-    transform: translate(30px, -40px) scale(1.08);
+
+  :focus-visible {
+    outline: 2px solid #C89A4E;
+    outline-offset: 2px;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #14120F;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #2E2A24;
+    border: 2px solid #14120F;
+    border-radius: 9999px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #4A4238;
   }
 }
 
-@keyframes float-reverse {
-  0%, 100% {
-    transform: translate(0px, 0px) scale(1);
-  }
-  50% {
-    transform: translate(-35px, 35px) scale(0.95);
-  }
+/* Flat panels and fields. Depth comes from one soft shadow and a hairline rule,
+   never a coloured halo. */
+.panel {
+  background: #1B1815;
+  border: 1px solid #2E2A24;
+  border-radius: 6px;
 }
 
-@keyframes pulse-slow {
-  0%, 100% {
-    opacity: 0.16;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.28;
-    transform: scale(1.12);
-  }
+.panel-hover {
+  transition: background-color 0.15s ease, border-color 0.15s ease;
 }
 
-.animate-float-slow {
-  animation: float-slow 18s ease-in-out infinite;
-  will-change: transform;
+.panel-hover:hover {
+  background: #221E1A;
+  border-color: #3C352C;
 }
 
-.animate-float-reverse {
-  animation: float-reverse 22s ease-in-out infinite;
-  will-change: transform;
+.field {
+  background: #16130F;
+  border: 1px solid #2E2A24;
+  border-radius: 4px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
-.animate-pulse-slow {
-  animation: pulse-slow 12s ease-in-out infinite;
-  will-change: opacity, transform;
+.field:focus {
+  border-color: #8A6A32;
+  box-shadow: 0 0 0 3px rgba(200, 154, 78, 0.12);
+  outline: none;
+}
+
+/* Stamped micro-label: the only uppercase tracked style in the product. */
+.label {
+  font-size: 11px;
+  line-height: 1;
+  font-weight: 500;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: #9C9286;
+}
+
+.tnum {
+  font-variant-numeric: tabular-nums;
 }
 
 /* Code viewer line numbers */
@@ -145,7 +108,7 @@
   top: 0;
   width: 2.2rem;
   text-align: right;
-  color: rgba(255, 255, 255, 0.2);
+  color: rgba(239, 233, 223, 0.22);
   user-select: none;
   font-family: 'JetBrains Mono', monospace;
   font-size: 0.75rem;

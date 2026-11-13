@@ -4,17 +4,11 @@ import {
   FileText,
   Image as ImageIcon,
   Search,
-  Code2,
   Trash2,
-  FileCheck,
   Eye,
   X,
   FileJson,
   ScrollText,
-  BookOpen,
-  Boxes,
-  Compass,
-  Tag,
   Copy,
   Check
 } from 'lucide-react';
@@ -60,15 +54,15 @@ export const FileExplorer: React.FC<FileExplorerProps> = ({
   const getFileIcon = (path: string) => {
     const lower = path.toLowerCase();
     if (lower.endsWith('.mcfunction')) {
-      return <ScrollText className="w-4 h-4 text-emerald-400" />;
+      return <ScrollText className="w-3.5 h-3.5 text-brass-400 flex-shrink-0" />;
     }
     if (lower.endsWith('.json') || lower.endsWith('.mcmeta')) {
-      return <FileJson className="w-4 h-4 text-amber-400" />;
+      return <FileJson className="w-3.5 h-3.5 text-stone-300 flex-shrink-0" />;
     }
     if (lower.endsWith('.png') || lower.endsWith('.jpg')) {
-      return <ImageIcon className="w-4 h-4 text-cyan-400" />;
+      return <ImageIcon className="w-3.5 h-3.5 text-muted flex-shrink-0" />;
     }
-    return <FileText className="w-4 h-4 text-slate-400" />;
+    return <FileText className="w-3.5 h-3.5 text-muted flex-shrink-0" />;
   };
 
   const handleCopyFileContent = () => {
@@ -79,184 +73,140 @@ export const FileExplorer: React.FC<FileExplorerProps> = ({
     }
   };
 
-  return (
-    <div className="glass-panel-elevated rounded-3xl border border-white/10 overflow-hidden shadow-2xl space-y-6 p-6 sm:p-8">
-      {/* Header and Summary stats */}
-      <div className="space-y-5">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
-            <h3 className="text-lg font-bold text-white flex items-center gap-2 tracking-tight">
-              <Boxes className="w-5 h-5 text-emerald-400" />
-              Datapack Contents & Analysis
-            </h3>
-            <p className="text-xs text-slate-400 mt-0.5">
-              {summary.totalFiles} files across {summary.namespaces.length || 1} namespace(s) • Total size: {formatFileSize(summary.totalSize)}
-            </p>
-          </div>
+  const stats: Array<[string, number | string]> = [
+    ['Functions', summary.counts.functions],
+    ['Recipes', summary.counts.recipes],
+    ['Tags', summary.counts.tags],
+    ['Advancements', summary.counts.advancements],
+    ['Loot tables', summary.counts.lootTables],
+    ['Namespaces', summary.namespaces.join(', ') || 'minecraft'],
+  ];
 
-          {/* Search Input */}
-          <div className="relative w-full sm:w-72">
-            <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-2.5 pointer-events-none" />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search pack files..."
-              className="w-full glass-input rounded-xl pl-10 pr-8 py-2 text-xs text-white placeholder-slate-500 focus:outline-none"
-            />
-            {searchQuery && (
+  return (
+    <div className="panel overflow-hidden">
+      {/* Ruled stat strip */}
+      <dl className="grid grid-cols-3 sm:grid-cols-6 divide-x divide-rule border-b border-rule">
+        {stats.map(([label, value]) => (
+          <div key={label} className="px-3 py-2.5 min-w-0">
+            <dt className="label truncate">{label}</dt>
+            <dd className="mt-1 font-mono text-sm text-paper tnum truncate">{value}</dd>
+          </div>
+        ))}
+      </dl>
+
+      {/* Search */}
+      <div className="flex items-center gap-2 px-3 h-11 border-b border-rule">
+        <Search className="w-3.5 h-3.5 text-muted flex-shrink-0" />
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="Filter by path"
+          className="flex-1 bg-transparent border-0 text-xs font-mono text-paper placeholder:text-stone-500 focus:outline-none"
+        />
+        <span className="font-mono text-[11px] text-muted tnum flex-shrink-0">
+          {filteredFiles.length}/{fileList.length}
+        </span>
+        {searchQuery && (
+          <button
+            type="button"
+            onClick={() => setSearchQuery('')}
+            className="text-muted hover:text-paper transition-colors flex-shrink-0"
+            aria-label="Clear filter"
+          >
+            <X className="w-3.5 h-3.5" />
+          </button>
+        )}
+      </div>
+
+      {/* Files */}
+      <div className="max-h-[420px] overflow-y-auto divide-y divide-rule">
+        {filteredFiles.length === 0 ? (
+          <p className="py-10 text-center text-xs text-muted">No files match that filter.</p>
+        ) : (
+          filteredFiles.map((file) => (
+            <div
+              key={file.path}
+              className="flex items-center gap-3 px-3 py-2 hover:bg-raised transition-colors group"
+            >
               <button
                 type="button"
-                onClick={() => setSearchQuery('')}
-                className="absolute right-2.5 top-2.5 text-slate-400 hover:text-white"
+                onClick={() => setSelectedFile(file)}
+                className="flex items-center gap-2.5 min-w-0 flex-1 text-left"
               >
-                <X className="w-3.5 h-3.5" />
+                {getFileIcon(file.path)}
+                <span className="font-mono text-[11px] text-stone-300 truncate group-hover:text-paper transition-colors">
+                  {file.path}
+                </span>
               </button>
-            )}
-          </div>
-        </div>
 
-        {/* Feature Badges Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
-          <div className="p-3 rounded-2xl bg-white/[0.03] border border-white/5 flex items-center gap-3 transition-colors hover:bg-white/[0.05]">
-            <ScrollText className="w-4 h-4 text-emerald-400 flex-shrink-0" />
-            <div className="min-w-0">
-              <span className="text-[10px] text-slate-400 block font-medium uppercase tracking-wider">Functions</span>
-              <span className="text-sm font-bold text-white">{summary.counts.functions}</span>
-            </div>
-          </div>
+              <div className="flex items-center gap-1 flex-shrink-0">
+                <span className="font-mono text-[11px] text-muted tnum mr-1">
+                  {formatFileSize(file.size)}
+                </span>
 
-          <div className="p-3 rounded-2xl bg-white/[0.03] border border-white/5 flex items-center gap-3 transition-colors hover:bg-white/[0.05]">
-            <BookOpen className="w-4 h-4 text-amber-400 flex-shrink-0" />
-            <div className="min-w-0">
-              <span className="text-[10px] text-slate-400 block font-medium uppercase tracking-wider">Recipes</span>
-              <span className="text-sm font-bold text-white">{summary.counts.recipes}</span>
-            </div>
-          </div>
-
-          <div className="p-3 rounded-2xl bg-white/[0.03] border border-white/5 flex items-center gap-3 transition-colors hover:bg-white/[0.05]">
-            <Tag className="w-4 h-4 text-sky-400 flex-shrink-0" />
-            <div className="min-w-0">
-              <span className="text-[10px] text-slate-400 block font-medium uppercase tracking-wider">Tags</span>
-              <span className="text-sm font-bold text-white">{summary.counts.tags}</span>
-            </div>
-          </div>
-
-          <div className="p-3 rounded-2xl bg-white/[0.03] border border-white/5 flex items-center gap-3 transition-colors hover:bg-white/[0.05]">
-            <FileCheck className="w-4 h-4 text-purple-400 flex-shrink-0" />
-            <div className="min-w-0">
-              <span className="text-[10px] text-slate-400 block font-medium uppercase tracking-wider">Advancements</span>
-              <span className="text-sm font-bold text-white">{summary.counts.advancements}</span>
-            </div>
-          </div>
-
-          <div className="p-3 rounded-2xl bg-white/[0.03] border border-white/5 flex items-center gap-3 transition-colors hover:bg-white/[0.05]">
-            <Compass className="w-4 h-4 text-rose-400 flex-shrink-0" />
-            <div className="min-w-0">
-              <span className="text-[10px] text-slate-400 block font-medium uppercase tracking-wider">Loot Tables</span>
-              <span className="text-sm font-bold text-white">{summary.counts.lootTables}</span>
-            </div>
-          </div>
-
-          <div className="p-3 rounded-2xl bg-white/[0.03] border border-white/5 flex items-center gap-3 transition-colors hover:bg-white/[0.05]">
-            <Code2 className="w-4 h-4 text-teal-400 flex-shrink-0" />
-            <div className="min-w-0 truncate">
-              <span className="text-[10px] text-slate-400 block font-medium uppercase tracking-wider">Namespaces</span>
-              <span className="text-sm font-bold text-white truncate block">{summary.namespaces.join(', ') || 'minecraft'}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Files List */}
-      <div className="border border-white/10 rounded-2xl overflow-hidden bg-[#0d1016]/80 backdrop-blur-md">
-        <div className="max-h-80 overflow-y-auto divide-y divide-white/5 scroll-smooth">
-          {filteredFiles.length === 0 ? (
-            <div className="py-12 text-center text-slate-400 text-xs">
-              No files match your search query.
-            </div>
-          ) : (
-            filteredFiles.map((file) => (
-              <div
-                key={file.path}
-                className="flex items-center justify-between px-4 py-2.5 hover:bg-white/[0.04] transition-colors group text-xs"
-              >
-                <div
+                <button
+                  type="button"
                   onClick={() => setSelectedFile(file)}
-                  className="flex items-center gap-3 min-w-0 flex-1 cursor-pointer"
+                  className="p-1.5 rounded text-muted hover:text-paper hover:bg-ground transition-colors"
+                  title="View file content"
                 >
-                  {getFileIcon(file.path)}
-                  <span className="font-mono text-slate-300 truncate group-hover:text-emerald-400 transition-colors">
-                    {file.path}
-                  </span>
-                </div>
+                  <Eye className="w-3.5 h-3.5" />
+                </button>
 
-                <div className="flex items-center gap-3 flex-shrink-0">
-                  <span className="text-[11px] text-slate-400 font-mono">
-                    {formatFileSize(file.size)}
-                  </span>
-
-                  <button
-                    type="button"
-                    onClick={() => setSelectedFile(file)}
-                    className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors"
-                    title="View file content"
-                  >
-                    <Eye className="w-3.5 h-3.5" />
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => onDeleteFile(file.path)}
-                    className="p-1.5 rounded-lg text-slate-400 hover:text-red-400 hover:bg-red-500/10 transition-colors"
-                    title="Remove file from JAR"
-                  >
-                    <Trash2 className="w-3.5 h-3.5" />
-                  </button>
-                </div>
+                <button
+                  type="button"
+                  onClick={() => onDeleteFile(file.path)}
+                  className="p-1.5 rounded text-muted hover:text-bad hover:bg-ground transition-colors"
+                  title="Exclude file from the jar"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                </button>
               </div>
-            ))
-          )}
-        </div>
+            </div>
+          ))
+        )}
       </div>
 
-      {/* File Viewer Modal */}
+      {/* File viewer */}
       {selectedFile && (
         <div
           onClick={() => setSelectedFile(null)}
-          className="fixed inset-0 z-50 bg-black/80 backdrop-blur-xl flex items-center justify-center p-4 animate-in fade-in duration-200"
+          className="fixed inset-0 z-50 bg-ground/90 flex items-center justify-center p-4"
         >
           <div
             onClick={(e) => e.stopPropagation()}
-
-            className="w-full max-w-3xl bg-[#12161f] border border-white/15 rounded-3xl overflow-hidden shadow-2xl flex flex-col max-h-[85vh] animate-in zoom-in-95 duration-200"
+            role="dialog"
+            aria-modal="true"
+            aria-label={selectedFile.path}
+            className="w-full max-w-3xl panel bg-panel shadow-panel overflow-hidden flex flex-col max-h-[85vh]"
           >
-            <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-[#0e1118]/80 backdrop-blur-md">
+            <header className="flex items-center justify-between gap-3 px-4 h-12 border-b border-rule flex-shrink-0">
               <div className="flex items-center gap-2.5 min-w-0">
                 {getFileIcon(selectedFile.path)}
-                <span className="font-mono text-xs sm:text-sm font-semibold text-white truncate">
+                <span className="font-mono text-[11px] text-paper truncate">
                   {selectedFile.path}
                 </span>
-                <span className="text-[11px] text-slate-400 font-mono">
-                  ({formatFileSize(selectedFile.size)})
+                <span className="font-mono text-[11px] text-muted tnum flex-shrink-0">
+                  {formatFileSize(selectedFile.size)}
                 </span>
               </div>
-              
-              <div className="flex items-center gap-2">
+
+              <div className="flex items-center gap-1 flex-shrink-0">
                 {!selectedFile.isBinary && selectedFile.content && (
                   <button
                     type="button"
                     onClick={handleCopyFileContent}
-                    className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-medium text-slate-300 hover:text-white bg-white/5 hover:bg-white/10 rounded-lg transition-colors border border-white/10"
+                    className="inline-flex items-center gap-1.5 h-7 px-2 rounded border border-rule text-[11px] text-stone-300 hover:text-paper hover:border-stone-600 transition-colors"
                   >
                     {hasCopied ? (
                       <>
-                        <Check className="w-3.5 h-3.5 text-emerald-400" />
-                        <span className="text-emerald-400">Copied</span>
+                        <Check className="w-3 h-3 text-brass-400" />
+                        <span className="text-brass-400">Copied</span>
                       </>
                     ) : (
                       <>
-                        <Copy className="w-3.5 h-3.5" />
+                        <Copy className="w-3 h-3" />
                         <span>Copy</span>
                       </>
                     )}
@@ -266,56 +216,59 @@ export const FileExplorer: React.FC<FileExplorerProps> = ({
                 <button
                   type="button"
                   onClick={() => setSelectedFile(null)}
-                  className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors"
+                  className="p-1.5 rounded text-muted hover:text-paper transition-colors"
+                  aria-label="Close"
                 >
-                  <X className="w-5 h-5" />
+                  <X className="w-4 h-4" />
                 </button>
               </div>
-            </div>
+            </header>
 
-            <div className="p-6 overflow-y-auto font-mono text-xs leading-relaxed bg-[#0a0d12] text-slate-200 scroll-smooth">
+            <div className="overflow-y-auto font-mono text-xs leading-relaxed bg-ground text-stone-200">
               {selectedFile.isBinary ? (
                 selectedFile.path.endsWith('.png') && selectedFile.raw ? (
-                  <div className="flex flex-col items-center justify-center py-12">
+                  <div className="flex flex-col items-center justify-center py-12 px-6">
                     <img
                       src={`data:image/png;base64,${btoa(
                         String.fromCharCode(...Array.from(selectedFile.raw))
                       )}`}
                       alt={selectedFile.path}
-                      className="max-w-[240px] border border-white/20 rounded-2xl [image-rendering:pixelated] shadow-xl"
+                      className="max-w-[240px] border border-rule [image-rendering:pixelated]"
                     />
-                    <span className="text-xs text-slate-400 mt-3 font-mono">Binary PNG Texture / Icon</span>
+                    <span className="text-[11px] text-muted mt-3 font-mono">
+                      PNG preview
+                    </span>
                   </div>
                 ) : (
-                  <div className="py-16 text-center text-slate-400">
-                    Binary file format. Cannot preview raw binary contents in text viewer.
-                  </div>
+                  <p className="py-16 px-6 text-center text-xs text-muted">
+                    Binary file — no text preview.
+                  </p>
                 )
               ) : (
-                <div className="code-line-numbers divide-y divide-white/[0.02]">
+                <div className="code-line-numbers py-3 pr-4">
                   {selectedFile.content ? (
                     selectedFile.content.split('\n').map((line, idx) => (
-                      <div key={idx} className="hover:bg-white/[0.02] py-0.5">
+                      <div key={idx} className="hover:bg-raised">
                         <span className="whitespace-pre">{line || ' '}</span>
                       </div>
                     ))
                   ) : (
-                    <span className="text-slate-500 italic">(Empty file)</span>
+                    <span className="text-muted italic">(empty)</span>
                   )}
                 </div>
               )}
             </div>
 
-            <div className="px-6 py-3 border-t border-white/10 bg-[#0e1118]/80 flex justify-between items-center text-xs text-slate-400">
-              <span className="font-mono text-[11px]">Press ESC to close</span>
+            <footer className="px-4 h-10 border-t border-rule flex items-center justify-between flex-shrink-0">
+              <span className="font-mono text-[11px] text-muted">ESC to close</span>
               <button
                 type="button"
                 onClick={() => setSelectedFile(null)}
-                className="px-4 py-1.5 bg-white/10 hover:bg-white/15 text-white rounded-xl text-xs font-medium transition-colors"
+                className="h-7 px-2.5 rounded border border-rule text-[11px] text-stone-300 hover:text-paper hover:border-stone-600 transition-colors"
               >
-                Close Viewer
+                Close
               </button>
-            </div>
+            </footer>
           </div>
         </div>
       )}

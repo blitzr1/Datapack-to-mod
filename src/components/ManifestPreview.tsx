@@ -8,63 +8,68 @@ import {
   generatePackMcmeta,
   generateManifestMF
 } from '../utils/metadataGenerators';
-import { Copy, Check, Code } from 'lucide-react';
+import { Copy, Check } from 'lucide-react';
 
 interface ManifestPreviewProps {
   metadata: ModMetadata;
   originalPackFormat?: number;
 }
 
+type ManifestTab = 'fabric' | 'neoforge' | 'forge' | 'quilt' | 'mcmeta' | 'manifest';
+
+const TAB_LABEL: Record<ManifestTab, string> = {
+  fabric: 'fabric.mod.json',
+  neoforge: 'neoforge.mods.toml',
+  forge: 'mods.toml',
+  quilt: 'quilt.mod.json',
+  mcmeta: 'pack.mcmeta',
+  manifest: 'MANIFEST.MF'
+};
+
 export const ManifestPreview: React.FC<ManifestPreviewProps> = ({
   metadata,
   originalPackFormat
 }) => {
-  const [activeTab, setActiveTab] = useState<'fabric' | 'neoforge' | 'forge' | 'quilt' | 'mcmeta' | 'manifest'>('fabric');
+  const [activeTab, setActiveTab] = useState<ManifestTab>('fabric');
   const [copied, setCopied] = useState(false);
 
-  const getActiveContent = (): { name: string; content: string; desc: string; type: string } => {
+  const getActiveContent = (): { name: string; content: string; desc: string } => {
     switch (activeTab) {
       case 'fabric':
         return {
           name: 'fabric.mod.json',
           content: generateFabricModJson(metadata),
-          desc: 'Fabric Loader metadata descriptor. Fabric reads this to register your mod and its datapack assets.',
-          type: 'json'
+          desc: 'Fabric Loader descriptor. Declares the resource-loader dependency the pack needs.'
         };
       case 'neoforge':
         return {
           name: 'META-INF/neoforge.mods.toml',
           content: generateNeoForgeModsToml(metadata),
-          desc: 'NeoForge mod specification file for Minecraft 1.20.4+ and 1.21+.',
-          type: 'toml'
+          desc: 'NeoForge 1.20.4 and newer, read as javafml.'
         };
       case 'forge':
         return {
           name: 'META-INF/mods.toml',
           content: generateForgeModsToml(metadata),
-          desc: 'Standard Forge mod definition file for Forge 1.16 - 1.20.x.',
-          type: 'toml'
+          desc: 'Forge, loaded as lowcodefml so a datapack-only jar is accepted.'
         };
       case 'quilt':
         return {
           name: 'quilt.mod.json',
           content: generateQuiltModJson(metadata),
-          desc: 'Quilt standard mod specification file.',
-          type: 'json'
+          desc: 'Quilt Loader, same entry shape Quilt expects.'
         };
       case 'mcmeta':
         return {
           name: 'pack.mcmeta',
           content: generatePackMcmeta(metadata, originalPackFormat),
-          desc: 'Datapack metadata file synchronized with your mod description and format.',
-          type: 'json'
+          desc: 'Keeps the pack_format and supported_formats your pack already declares.'
         };
       case 'manifest':
         return {
           name: 'META-INF/MANIFEST.MF',
           content: generateManifestMF(metadata),
-          desc: 'Java Archive standard manifest declaration.',
-          type: 'text'
+          desc: 'Standard Java archive manifest.'
         };
     }
   };
@@ -78,73 +83,50 @@ export const ManifestPreview: React.FC<ManifestPreviewProps> = ({
   };
 
   return (
-    <div className="glass-panel-elevated rounded-3xl border border-white/10 overflow-hidden shadow-2xl space-y-5 p-6 sm:p-8">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h3 className="text-lg font-bold text-white flex items-center gap-2 tracking-tight">
-            <Code className="w-5 h-5 text-emerald-400" />
-            Live Generated Mod Manifests
-          </h3>
-          <p className="text-xs text-slate-400 mt-0.5">
-            Preview the exact descriptor files that will be compiled into your mod JAR in real time.
-          </p>
-        </div>
-
+    <div className="panel overflow-hidden">
+      <div className="flex items-center justify-between gap-3 px-3 h-11 border-b border-rule">
+        <span className="label">Descriptors</span>
         <button
+          type="button"
           onClick={handleCopy}
-          className="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold text-slate-200 bg-white/10 hover:bg-white/15 active:scale-95 rounded-xl transition-all border border-white/10 self-start sm:self-auto shadow-sm"
+          className="inline-flex items-center gap-1.5 h-7 px-2 rounded border border-rule text-[11px] text-stone-300 hover:text-paper hover:border-stone-600 transition-colors"
         >
           {copied ? (
             <>
-              <Check className="w-3.5 h-3.5 text-emerald-400" />
-              <span className="text-emerald-400">Copied to Clipboard!</span>
+              <Check className="w-3 h-3 text-brass-400" />
+              <span className="text-brass-400">Copied</span>
             </>
           ) : (
             <>
-              <Copy className="w-3.5 h-3.5" />
-              <span>Copy Code</span>
+              <Copy className="w-3 h-3" />
+              <span>Copy</span>
             </>
           )}
         </button>
       </div>
 
-      {/* Manifest Tabs */}
-      <div className="flex border-b border-white/10 overflow-x-auto bg-[#0d1016]/70 backdrop-blur-md -mx-6 sm:-mx-8 px-6 sm:px-8 pt-2 gap-2 scroll-smooth">
-        {(['fabric', 'neoforge', 'forge', 'quilt', 'mcmeta', 'manifest'] as const).map((tab) => {
-          const names: Record<string, string> = {
-            fabric: 'fabric.mod.json',
-            neoforge: 'neoforge.mods.toml',
-            forge: 'mods.toml',
-            quilt: 'quilt.mod.json',
-            mcmeta: 'pack.mcmeta',
-            manifest: 'MANIFEST.MF'
-          };
-
-          const isSelected = activeTab === tab;
-          return (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={`px-4 py-2.5 text-xs font-mono font-medium rounded-t-xl transition-all whitespace-nowrap ${
-                isSelected
-                  ? 'bg-emerald-500/15 text-emerald-400 border-b-2 border-emerald-400'
-                  : 'text-slate-400 hover:text-slate-200 hover:bg-white/[0.03]'
-              }`}
-            >
-              {names[tab]}
-            </button>
-          );
-        })}
+      <div className="flex items-stretch gap-1 px-2 border-b border-rule overflow-x-auto">
+        {(Object.keys(TAB_LABEL) as ManifestTab[]).map((tab) => (
+          <button
+            key={tab}
+            type="button"
+            onClick={() => setActiveTab(tab)}
+            className={`px-2.5 h-10 font-mono text-[11px] whitespace-nowrap border-b-2 -mb-px transition-colors ${
+              activeTab === tab
+                ? 'border-brass text-paper'
+                : 'border-transparent text-muted hover:text-stone-300'
+            }`}
+          >
+            {TAB_LABEL[tab]}
+          </button>
+        ))}
       </div>
 
-      <div className="text-xs text-slate-400 italic">
-        {active.desc}
-      </div>
+      <p className="px-4 py-2.5 text-[11px] text-muted border-b border-rule">{active.desc}</p>
 
-      {/* Code Container */}
-      <div className="rounded-2xl border border-white/10 bg-[#0a0d12] p-5 font-mono text-xs text-emerald-300/90 overflow-x-auto max-h-80 scroll-smooth shadow-inner">
-        <pre className="whitespace-pre leading-relaxed">{active.content}</pre>
-      </div>
+      <pre className="max-h-[420px] overflow-auto bg-ground px-4 py-3 font-mono text-[11px] leading-relaxed text-stone-200 whitespace-pre">
+        {active.content}
+      </pre>
     </div>
   );
 };

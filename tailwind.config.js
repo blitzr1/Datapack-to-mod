@@ -7,31 +7,44 @@ export default {
   theme: {
     extend: {
       colors: {
-        mc: {
-          dark: '#121417',
-          surface: '#1b1f24',
-          card: '#22272e',
-          border: '#373e47',
-          accent: '#10b981',       // emerald
-          accentHover: '#059669',
-          diamond: '#38bdf8',      // diamond blue
-          gold: '#fbbf24',         // gold ingot
-          redstone: '#f43f5e',     // redstone red
-          amethyst: '#c084fc',     // amethyst purple
-          text: '#f1f5f9',
-          muted: '#94a3b8'
-        }
+        // Workshop instrument: warm graphite ground, steel panels, brass as the
+        // only accent. Numeric brass shades exist so opacity modifiers still work.
+        ground: '#14120F',
+        panel: '#1B1815',
+        raised: '#221E1A',
+        rule: '#2E2A24',
+        brass: {
+          DEFAULT: '#C89A4E',
+          300: '#E4C48A',
+          400: '#D6AD64',
+          500: '#C89A4E',
+          600: '#A87C36',
+          700: '#7E5B26',
+          800: '#5C431C',
+          900: '#3D2D14',
+          950: '#241A0C',
+        },
+        paper: '#EFE9DF',
+        muted: '#9C9286',
+        ok: '#6E9E6A',
+        warn: '#D08A3E',
+        bad: '#C4624F',
+        // Loader cue: a 6px swatch, never a border or a wash.
+        loader: {
+          universal: '#A8A29A',
+          fabric: '#C8A97E',
+          quilt: '#A98BB8',
+          forge: '#C08155',
+          neoforge: '#7C9FAE',
+        },
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
+        sans: ['IBM Plex Sans', 'system-ui', 'sans-serif'],
         mono: ['JetBrains Mono', 'Fira Code', 'monospace'],
-        pixel: ['"Press Start 2P"', 'monospace']
       },
       boxShadow: {
-        'mc-card': '0 8px 32px 0 rgba(0, 0, 0, 0.37)',
-        'mc-glow': '0 0 20px -3px rgba(16, 185, 129, 0.4)',
-        'mc-blue-glow': '0 0 20px -3px rgba(56, 189, 248, 0.4)',
-      }
+        panel: '0 1px 2px rgba(0, 0, 0, 0.4), 0 16px 40px -20px rgba(0, 0, 0, 0.7)',
+      },
     },
   },
   plugins: [],
